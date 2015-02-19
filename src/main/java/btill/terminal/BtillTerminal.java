@@ -1,13 +1,19 @@
 package btill.terminal;
 
+import btill.terminal.bitcoin.BitcoinTill;
+import btill.terminal.bitcoin.GBP2SatoshisExchangeRate;
+import btill.terminal.bluetooth.BtillServer;
+import btill.terminal.bluetooth.Controller;
+import btill.terminal.values.GBP;
+import btill.terminal.values.Menu;
+import btill.terminal.values.MenuItem;
+
 import javax.bluetooth.UUID;
 
-import static btill.terminal.Request.Command.MAKE_ORDER;
-import static btill.terminal.Request.Command.REQUEST_MENU;
-import static btill.terminal.Request.Command.SETTLE_BILL;
 import static java.util.Arrays.asList;
 
 public class BtillTerminal implements AutoCloseable {
+    private static final double CONVERSION_RATE = 6534.589;
     public static final UUID SERVICE_ID = new UUID("0000110100001000800000805F9B34FB", false);
     public static final String SERVICE_NAME = "helloService";
     public static final String SERVICE_HOST = "btspp://localhost:";
@@ -19,23 +25,20 @@ public class BtillTerminal implements AutoCloseable {
 
 
         Menu menu = createMenu();
-        Controller controller = new Controller();
-        controller.register(REQUEST_MENU, new RequestMenuHandler(menu));
-        controller.register(MAKE_ORDER, new MakeOrderHandler(till));
-        controller.register(SETTLE_BILL, new SettleBillHandler(till));
+        Controller controller = new Controller(menu, till);
         server.use(controller);
 
         server.start();
     }
 
     private static Till createTill() {
-        return new BitcoinTill();
+        return new BitcoinTill(new GBP2SatoshisExchangeRate(CONVERSION_RATE));
     }
 
     private Menu createMenu() {
         return new Menu(asList(
-                new MenuItem("Bitter", new GBP(3, 75)),
-                new MenuItem("Lager", new GBP(4, 25))
+                new MenuItem("Bitter", new GBP(375)),
+                new MenuItem("Lager", new GBP(425))
         ));
     }
 
