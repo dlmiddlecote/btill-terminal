@@ -6,14 +6,27 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class MenuItem {
     private final String name;
     private final GBP price;
+    private int quantity = 0;
+
+    public String getName() {
+        return name;
+    }
+
+    public GBP getPrice() {
+        return price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
     public MenuItem(String name, GBP price) {
         this.name = name;
         this.price = price;
-    }
-
-    public GBP cost() {
-        return price;
     }
 
     @Override public String toString() {

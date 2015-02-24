@@ -27,6 +27,10 @@ public class GBP {
         return new GBP(pence  - that.pence);
     }
 
+    public GBP times(int mult) {
+        return new GBP(pence*mult);
+    }
+
     @Override
     public String toString() {
         float f = (float) (pence / 100.0);

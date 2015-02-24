@@ -2,13 +2,12 @@ package btill.terminal.bluetooth;
 
 import btill.terminal.Server;
 import btill.terminal.values.BTMessage;
+import org.apache.commons.io.IOUtils;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 import static btill.terminal.bluetooth.Command.toCommand;
 
@@ -27,22 +26,30 @@ public class BtillServer implements Server {
     public void start() {
         try {
             service = (StreamConnectionNotifier) Connector.open(serviceUri);
+            System.out.println("Waiting...");
+            StreamConnection connection = service.acceptAndOpen();
+            InputStream incomingStream = connection.openInputStream();
+            OutputStream out = connection.openOutputStream();
+
+
             while (true) {
-                StreamConnection connection = service.acceptAndOpen(); // blocks until connection
-
-                DataInputStream incomingStream = new DataInputStream(connection.openDataInputStream());
-
-                String receivedString = incomingStream.readUTF();
-
+                // blocks until connection
+                System.out.println("Connection Opened");
+                //DataInputStream incomingStream = new DataInputStream(connection.openDataInputStream());
+                System.out.println("Input Stream Opened");
+                //String receivedString = incomingStream.readUTF();
+                byte[] byteArray = new byte[2048];
+                int bytes = incomingStream.read(byteArray);
+                //incomingStream.close();
+                String receivedString = new String(byteArray, 0, bytes);
+                System.out.println("Received string: " + receivedString + " read " + bytes + " bytes");
                 BTMessage incomingMessage = new BTMessageBuilder(receivedString.getBytes()).build();
-
-                DataOutputStream out = new DataOutputStream(connection.openOutputStream());
 
                 BTMessage responseMessage = controller.processRequest(toCommand(incomingMessage.getHeader()), incomingMessage.getBody());
 
                 out.write(responseMessage.getBytes());
-
-                connection.close();
+                //out.close();
+               //connection.close();
 
             }
         } catch (IOException e) {

@@ -60,11 +60,11 @@ public class Bill implements Serializable {
         buildPaymentRequest();
     }
 
-    public void buildPaymentRequest() {
+    public void buildPaymentRequest() {/*
         requestBuilder = PaymentProtocol.createPaymentRequest(net3Params,
                 coinAmount, wallet.currentReceiveAddress(), memo, paymentURL,
                 merchantData);
-        request = requestBuilder.build();
+        request = requestBuilder.build();*/
     }
 
     /**

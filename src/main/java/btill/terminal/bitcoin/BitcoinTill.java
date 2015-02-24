@@ -31,6 +31,7 @@ public class BitcoinTill implements Till {
     }
 
     public Bill createBillForAmount(GBP amount) {
+        System.out.println("Amount: " + amount.toString());
         billBuilder = new BillBuilder();
         billBuilder.setAmount(exchange.getSatoshis(amount));
         billBuilder.setMemo(memo);
@@ -52,10 +53,10 @@ public class BitcoinTill implements Till {
 
     @Override
     public Bill createBillForAmount(Menu menu) {
-        GBP totalCost = new GBP();
+        GBP totalCost = new GBP(0);
 
         for (MenuItem item: menu) {
-            totalCost.plus(item.cost());
+            totalCost = totalCost.plus(item.getPrice().times(item.getQuantity()));
         }
 
         return createBillForAmount(totalCost);

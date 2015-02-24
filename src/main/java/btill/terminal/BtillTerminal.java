@@ -38,7 +38,12 @@ public class BtillTerminal implements AutoCloseable {
     private Menu createMenu() {
         return new Menu(asList(
                 new MenuItem("Bitter", new GBP(375)),
-                new MenuItem("Lager", new GBP(425))
+                new MenuItem("Lager", new GBP(425)),
+                new MenuItem("Chicken", new GBP(200)),
+                new MenuItem("More Chicken", new GBP(100))
+                //new MenuItem("Hot Wings", new GBP(250))
+                //new MenuItem("Chicken Burger", new GBP(300))
+                //new MenuItem("Popcorn Chicken", new GBP(150))
         ));
     }
 
