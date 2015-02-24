@@ -27,8 +27,8 @@ public class Controller {
                 return new BtillResponse(OK, serialize(menu));
             }
             case MAKE_ORDER: {
-                MenuItem item = deserializeMenuItem(content);
-                Bill bill = till.createBillForAmount(item.cost());
+                Menu menu = deserializeMenu(content);
+                Bill bill = till.createBillForAmount(menu);
                 return new BtillResponse(OK, serialize(bill));
             }
             case SETTLE_BILL: {
@@ -43,8 +43,8 @@ public class Controller {
 
     }
 
-    private MenuItem deserializeMenuItem(String content) {
-        return new Gson().fromJson(content, MenuItem.class);
+    private Menu deserializeMenu(String content) {
+        return new Gson().fromJson(content, Menu.class);
     }
 
     private Payment deserializePayment(String content) {
