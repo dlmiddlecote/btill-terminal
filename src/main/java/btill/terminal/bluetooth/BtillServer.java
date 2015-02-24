@@ -1,6 +1,7 @@
 package btill.terminal.bluetooth;
 
 import btill.terminal.Server;
+import btill.terminal.values.BTMessage;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
@@ -32,13 +33,12 @@ public class BtillServer implements Server {
                 DataInputStream incomingStream = new DataInputStream(connection.openDataInputStream());
 
                 String received = incomingStream.readUTF();
-                int boundary = received.indexOf(":");
-                String header = received.substring(0, boundary);
-                String body = received.substring(boundary + 1);
+
+                BTMessage btMessage = new BTMessage(received);
 
                 DataOutputStream out = new DataOutputStream(connection.openOutputStream());
 
-                BtillResponse response = controller.processRequest(toCommand(header), body);
+                BtillResponse response = controller.processRequest(toCommand(btMessage.getHeader()), btMessage.getBody());
 
                 out.writeBytes(response.status());
                 out.writeBytes(":");
