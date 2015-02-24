@@ -3,7 +3,8 @@ package btill.terminal.bluetooth;
 public enum Command {
     REQUEST_MENU,
     MAKE_ORDER,
-    SETTLE_BILL;
+    SETTLE_BILL,
+    CANCEL_ORDER;
 
     public static Command toCommand(String value) {
         if (value == null) {

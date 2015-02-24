@@ -32,17 +32,16 @@ public class BtillServer implements Server {
 
                 DataInputStream incomingStream = new DataInputStream(connection.openDataInputStream());
 
-                String received = incomingStream.readUTF();
+                String receivedString = incomingStream.readUTF();
 
-                BTMessage btMessage = new BTMessage(received);
+                BTMessage incomingMessage = new BTMessageBuilder(receivedString.getBytes()).build();
 
                 DataOutputStream out = new DataOutputStream(connection.openOutputStream());
 
-                BtillResponse response = controller.processRequest(toCommand(btMessage.getHeader()), btMessage.getBody());
+                BTMessage responseMessage = controller.processRequest(toCommand(incomingMessage.getHeader()), incomingMessage.getBody());
 
-                out.writeBytes(response.status());
-                out.writeBytes(":");
-                out.writeBytes(response.body());
+                out.write(responseMessage.getBytes());
+
                 connection.close();
 
             }

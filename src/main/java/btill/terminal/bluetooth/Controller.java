@@ -1,10 +1,7 @@
 package btill.terminal.bluetooth;
 
 import btill.terminal.Till;
-import btill.terminal.values.Bill;
-import btill.terminal.values.Menu;
-import btill.terminal.values.MenuItem;
-import btill.terminal.values.Receipt;
+import btill.terminal.values.*;
 import com.google.gson.Gson;
 import org.bitcoin.protocols.payments.Protos.Payment;
 
@@ -20,48 +17,40 @@ public class Controller {
         this.till = till;
     }
 
-    public BtillResponse processRequest(Command command, String content) {
+    public BTMessage processRequest(Command command, byte[] content) {
 
         switch (command) {
             case REQUEST_MENU: {
-                return new BtillResponse(OK, serialize(menu));
+                return new BTMessageBuilder(OK, menu).build();
             }
             case MAKE_ORDER: {
                 Menu menu = deserializeMenu(content);
                 Bill bill = till.createBillForAmount(menu);
-                return new BtillResponse(OK, serialize(bill));
+                return new BTMessageBuilder(OK, bill).build();
             }
             case SETTLE_BILL: {
                 Payment payment = deserializePayment(content);
                 Receipt receipt = till.settleBillUsing(payment);
-                return new BtillResponse(OK, serialize(receipt));
+                return new BTMessageBuilder(OK, receipt).build();
             }
             default: {
-                return new BtillResponse(NOT_FOUND, "");
+                return new BTMessageBuilder(NOT_FOUND).build();
             }
         }
 
     }
 
-    private Menu deserializeMenu(String content) {
-        return new Gson().fromJson(content, Menu.class);
+    private Menu deserializeMenu(byte[] content) {
+        return new Gson().fromJson(new String(content, 0, content.length), Menu.class);
     }
 
-    private Payment deserializePayment(String content) {
-        return new Gson().fromJson(content, Payment.class);
+    private Payment deserializePayment(byte[] content) {
+        try {
+            return Payment.parseFrom(content);
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
     }
-
-    private String serialize(Bill bill) {
-        return new Gson().toJson(bill);
-    }
-
-    private String serialize(Menu menu) {
-        return new Gson().toJson(menu);
-    }
-
-    private String serialize(Receipt receipt) {
-        return new Gson().toJson(receipt);
-    }
-
-
 }
