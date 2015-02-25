@@ -7,18 +7,38 @@ import btill.terminal.bluetooth.Controller;
 import btill.terminal.values.GBP;
 import btill.terminal.values.Menu;
 import btill.terminal.values.MenuItem;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 
 import javax.bluetooth.UUID;
 
 import static java.util.Arrays.asList;
 
 public class BtillTerminal implements AutoCloseable {
-    private static final double CONVERSION_RATE = 6534.589;
+    //private static final double CONVERSION_RATE = 5854.8;
+    private static final double CONVERSION_RATE = penceExchangeRate();
     public static final UUID SERVICE_ID = new UUID("0000110100001000800000805F9B34FB", false);
     public static final String SERVICE_NAME = "helloService";
     public static final String SERVICE_HOST = "btspp://localhost:";
 
     private Server server;
+
+    private static double penceExchangeRate() {
+        String gbp = null;
+        try {
+            gbp = Unirest.get("https://community-bitcointy.p.mashape.com/price/GBP")
+                    .header("X-Mashape-Key", "lkv6KPZ302mshKYByfU1gD0iqSsqp1OV2l0jsnlc4oIyhtpR8p")
+                    .header("Accept", "text/plain")
+                    .asString().getBody();
+        } catch (UnirestException e) {
+            System.out.println("Error");
+        }
+        if (gbp != null) {
+            Double pence = Double.parseDouble(gbp);
+            return 1000000.0/pence;
+        }
+        return 0.0;
+    }
 
     public void startUsing(Server server, Till till) {
         this.server = server;
@@ -37,13 +57,15 @@ public class BtillTerminal implements AutoCloseable {
 
     private Menu createMenu() {
         return new Menu(asList(
-                new MenuItem("Bitter", new GBP(375)),
-                new MenuItem("Lager", new GBP(425)),
-                new MenuItem("Chicken", new GBP(200)),
-                new MenuItem("More Chicken", new GBP(100))
-                //new MenuItem("Hot Wings", new GBP(250))
-                //new MenuItem("Chicken Burger", new GBP(300))
-                //new MenuItem("Popcorn Chicken", new GBP(150))
+                new MenuItem("Burrito", new GBP(600)),
+                new MenuItem("Nachos", new GBP(500)),
+                new MenuItem("Quesadilla", new GBP(400)),
+                new MenuItem("Tacos", new GBP(600)),
+                new MenuItem("Guacamole", new GBP(200)),
+                new MenuItem("Spicy Rice", new GBP(300)),
+                new MenuItem("Horchata", new GBP(350)),
+                new MenuItem("Mojito", new GBP(700))
+
         ));
     }
 
