@@ -21,12 +21,18 @@ public class Controller {
 
         switch (command) {
             case REQUEST_MENU: {
-                return new BTMessageBuilder(OK, menu).build();
+                BTMessage message =  new BTMessageBuilder(OK, menu).build();
+                //System.out.println("Read Count: " + message.getReadCount());
+                return message;
             }
             case MAKE_ORDER: {
                 Menu menu = deserializeMenu(content);
-                Bill bill = till.createBillForAmount(menu);
-                return new BTMessageBuilder(OK, bill).build();
+                //Bill bill = till.createBillForAmount(menu);
+                GBP amount = till.getGBP(menu);
+                NewBill bill = new NewBill(new GBP(500));
+                bill.setRequest(bill.getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount=" + till.getAmount(amount) + "&r=http://www.b-till.com&message=Payment%20for%20coffee"));
+                BTMessage message = new BTMessageBuilder(OK, bill).build();
+                return message;
             }
             case SETTLE_BILL: {
                 Payment payment = deserializePayment(content);

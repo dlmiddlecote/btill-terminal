@@ -2,6 +2,7 @@ package btill.terminal.values;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.bitcoin.protocols.payments.Protos;
 import org.bitcoin.protocols.payments.Protos.PaymentRequest;
 import org.bitcoin.protocols.payments.Protos.PaymentRequest.Builder;
 import org.bitcoinj.core.Coin;
@@ -11,6 +12,8 @@ import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.protocols.payments.PaymentProtocol;
 import org.bitcoinj.protocols.payments.PaymentProtocolException;
 import org.bitcoinj.protocols.payments.PaymentSession;
+import org.bitcoinj.uri.BitcoinURI;
+import org.bitcoinj.uri.BitcoinURIParseException;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -50,6 +53,14 @@ public class Bill implements Serializable {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
+    public PaymentRequest getRequest() {
+        return request;
+    }
+
+    public void setRequest(PaymentRequest request) {
+        this.request = request;
+    }
+
     public Bill(String memo, String paymentURL, byte[] merchantData,
                 Coin amount, Wallet wallet) {
         this.memo = memo;
@@ -59,6 +70,23 @@ public class Bill implements Serializable {
         this.wallet = wallet;
         buildPaymentRequest();
     }
+    public Protos.PaymentRequest getRequest(String uri) {
+        BitcoinURI mUri = null;
+        try {
+            mUri = new BitcoinURI(TestNet3Params.get(), uri);
+        } catch (BitcoinURIParseException e) {
+            System.out.println("Bitcoin URI Parse Exception");
+        }
+
+        org.bitcoinj.core.Address address = mUri.getAddress();
+        Coin amount = mUri.getAmount();
+        String memo = mUri.getMessage();
+        String url = mUri.getPaymentRequestUrl();
+        Protos.PaymentRequest.Builder requestBuilder = PaymentProtocol.createPaymentRequest(TestNet3Params.get(), amount, address, memo, url, null);
+        Protos.PaymentRequest request = requestBuilder.build();
+        return request;
+    }
+
 
     public void buildPaymentRequest() {/*
         requestBuilder = PaymentProtocol.createPaymentRequest(net3Params,

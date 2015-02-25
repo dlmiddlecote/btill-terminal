@@ -31,7 +31,7 @@ public class BitcoinTill implements Till {
     }
 
     public Bill createBillForAmount(GBP amount) {
-        System.out.println("Amount: " + amount.toString());
+        System.out.println("Amount: " + amount.toString() + ": Bitcoin: " + exchange.getSatoshis(amount).toString());
         billBuilder = new BillBuilder();
         billBuilder.setAmount(exchange.getSatoshis(amount));
         billBuilder.setMemo(memo);
@@ -51,12 +51,27 @@ public class BitcoinTill implements Till {
         return billBuilder.build();
     }
 
+    public String getAmount(GBP amount) {
+        return exchange.getSatoshis(amount).toPlainString();
+    }
+
+    public GBP getGBP(Menu menu) {
+        GBP totalCost = new GBP(0);
+
+        for (MenuItem item: menu) {
+            totalCost = totalCost.plus(item.getPrice().times(item.getQuantity()));
+            System.out.println("Item: " + item.getName() + "\n" + "Quantity: " + item.getQuantity() + "\n");
+        }
+
+        return totalCost;
+    }
     @Override
     public Bill createBillForAmount(Menu menu) {
         GBP totalCost = new GBP(0);
 
         for (MenuItem item: menu) {
             totalCost = totalCost.plus(item.getPrice().times(item.getQuantity()));
+            System.out.println("Item: " + item.getName() + "\n" + "Quantity: " + item.getQuantity() + "\n");
         }
 
         return createBillForAmount(totalCost);
@@ -73,6 +88,7 @@ public class BitcoinTill implements Till {
         // return receipt;
         return null;
     }
+
 
     /**
      * Sets the {@link Wallet} to which payment requests are directed - probably

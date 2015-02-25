@@ -2,6 +2,9 @@ package btill.terminal.bluetooth;
 
 import btill.terminal.Server;
 import btill.terminal.values.BTMessage;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.commons.io.IOUtils;
 
 import javax.microedition.io.Connector;
@@ -27,12 +30,15 @@ public class BtillServer implements Server {
         try {
             service = (StreamConnectionNotifier) Connector.open(serviceUri);
             System.out.println("Waiting...");
-            StreamConnection connection = service.acceptAndOpen();
+            /*StreamConnection connection = service.acceptAndOpen();
             InputStream incomingStream = connection.openInputStream();
-            OutputStream out = connection.openOutputStream();
+            OutputStream out = connection.openOutputStream();*/
 
 
             while (true) {
+                StreamConnection connection = service.acceptAndOpen();
+                InputStream incomingStream = connection.openInputStream();
+                OutputStream out = connection.openOutputStream();
                 // blocks until connection
                 System.out.println("Connection Opened");
                 //DataInputStream incomingStream = new DataInputStream(connection.openDataInputStream());
@@ -46,8 +52,34 @@ public class BtillServer implements Server {
                 BTMessage incomingMessage = new BTMessageBuilder(receivedString.getBytes()).build();
 
                 BTMessage responseMessage = controller.processRequest(toCommand(incomingMessage.getHeader()), incomingMessage.getBody());
+                System.out.println("Length: " + responseMessage.getBytes().length);
+                //out.write(responseMessage.getBytes());
+                /*if (responseMessage.getBytes().length > 990) {
+                    out.write(responseMessage.getBytes(), 0, 990);
+                    out.flush();
+                    out.write(responseMessage.getBytes(), 990, responseMessage.getBytes().length-990);
+                }
+                else {
+                    out.write(responseMessage.getBytes());
+                }*/
 
-                out.write(responseMessage.getBytes());
+                int start = 0;
+                Integer readCount = (responseMessage.getBytes().length / 990) + 1;
+                int lengthLeft = responseMessage.getBytes().length;
+                System.out.println("Length: " + readCount);
+                out.write(readCount.toString().getBytes());
+                for (int i = 0; i < readCount; i++) {
+                    if (lengthLeft < 990) {
+                        out.write(responseMessage.getBytes(), start, lengthLeft);
+                    }
+                    else {
+                        out.write(responseMessage.getBytes(), start, 990);
+                    }
+                    out.flush();
+                    start += 990;
+                    lengthLeft -= 990;
+                }
+                System.out.println("Written to phone");
                 //out.close();
                //connection.close();
 

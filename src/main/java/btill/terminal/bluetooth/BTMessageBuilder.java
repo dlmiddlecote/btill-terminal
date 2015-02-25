@@ -60,6 +60,12 @@ public class BTMessageBuilder {
         this.body = json.getBytes();
     }
 
+    public BTMessageBuilder(Status status, Bill bill) {
+        this.header = status.toString();
+        String json = new Gson().toJson(bill, Bill.class);
+        this.body = json.getBytes();
+    }
+
     public BTMessageBuilder setHeader(String header) {
         this.header = header;
         return this;
