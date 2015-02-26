@@ -54,6 +54,15 @@ public class BitcoinTill implements Till {
     }
 
     public Receipt settleBillUsing(Payment withPayment) {
+
+        // initialize BitcoinCoreClient
+        // acknowledgement = BitcoinCoreClient.commitTransaction(withPayment)
+
+        // Acknowledgement = a class that wraps the return
+
+        // if (acknowledgement)
+        // return receipt(transactionID)
+
         // TODO Pay for Bill using withPayment and return Receipt of transaction
         // Probably want merchant info
         // bitcoins & pounds transacted

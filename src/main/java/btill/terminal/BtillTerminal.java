@@ -2,8 +2,6 @@ package btill.terminal;
 
 import btill.terminal.bitcoin.BitcoinTill;
 import btill.terminal.bitcoin.GBP2SatoshisExchangeRate;
-import btill.terminal.bluetooth.BtillServer;
-import btill.terminal.bluetooth.Controller;
 import btill.terminal.values.GBP;
 import btill.terminal.values.Menu;
 import btill.terminal.values.MenuItem;
