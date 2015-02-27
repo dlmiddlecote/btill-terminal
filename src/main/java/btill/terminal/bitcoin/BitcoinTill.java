@@ -9,6 +9,7 @@ import org.bitcoinj.core.Wallet;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * BitcoinTill currently builds a {@link btill.terminal.values.Bill} which contains a payment request pointing
@@ -77,7 +78,7 @@ public class BitcoinTill implements Till {
         return createBillForAmount(totalCost);
     }
 
-    public Receipt settleBillUsing(Payment withPayment) {
+    public Receipt settleBillUsing(Payment withPayment, GBP amount) {
         // TODO Pay for Bill using withPayment and return Receipt of transaction
         // Probably want merchant info
         // bitcoins & pounds transacted
@@ -85,8 +86,8 @@ public class BitcoinTill implements Till {
         // Receipt receipt = new Receipt().build(withPayment.getGBPamount(), withPayment.getBitcoinAmount(),
         // withPayment.getMemo());
         // To make a receipt we need amount transacted in GBP and bitcoins, and order ID from memo
-        // return receipt;
-        return null;
+        //return receipt;
+        return new Receipt(new Date(), amount, exchange.getSatoshis(amount));
     }
 
 

@@ -45,10 +45,25 @@ public class BtillServer implements Server {
                 System.out.println("Input Stream Opened");
                 //String receivedString = incomingStream.readUTF();
                 byte[] byteArray = new byte[2048];
-                int bytes = incomingStream.read(byteArray);
+                int bytes = 0;
+                bytes = incomingStream.read(byteArray);
+                String readMessageCount = new String(byteArray, 0, bytes);
+                Integer readCountIn = Integer.parseInt(readMessageCount);
+                String receivedString = new String();
+                bytes = 0;
+                int bytesTotal = 0;
+
+                for (int i = 0; i < readCountIn.intValue(); i++) {
+                    bytes = incomingStream.read(byteArray);
+                    bytesTotal += bytes;
+                    receivedString += new String(byteArray, 0, bytes);
+                }
+
+
+
                 //incomingStream.close();
-                String receivedString = new String(byteArray, 0, bytes);
-                System.out.println("Received string: " + receivedString + " read " + bytes + " bytes");
+               // String receivedString = new String(byteArray, 0, bytes);
+                System.out.println("Read " + bytesTotal + " bytes, Received string: " + receivedString);
                 BTMessage incomingMessage = new BTMessageBuilder(receivedString.getBytes()).build();
 
                 BTMessage responseMessage = controller.processRequest(toCommand(incomingMessage.getHeader()), incomingMessage.getBody());
@@ -68,12 +83,16 @@ public class BtillServer implements Server {
                 int lengthLeft = responseMessage.getBytes().length;
                 System.out.println("Length: " + readCount);
                 out.write(readCount.toString().getBytes());
+                System.out.println("Written: " + readCount.toString());
+                //out.flush();
                 for (int i = 0; i < readCount; i++) {
                     if (lengthLeft < 990) {
                         out.write(responseMessage.getBytes(), start, lengthLeft);
+                        System.out.println("Written: " + new String(responseMessage.getBytes(), start, lengthLeft));
                     }
                     else {
                         out.write(responseMessage.getBytes(), start, 990);
+                        System.out.println("Written: " + new String(responseMessage.getBytes(), start, 990));
                     }
                     out.flush();
                     start += 990;

@@ -9,7 +9,7 @@ import org.bitcoinj.core.Address;
 
 public interface Till {
     Bill createBillForAmount(Menu menu);
-    Receipt settleBillUsing(Protos.Payment payment);
+    Receipt settleBillUsing(Protos.Payment payment, GBP amount);
 
     GBP getGBP(Menu menu);
     String getAmount(GBP amount);
