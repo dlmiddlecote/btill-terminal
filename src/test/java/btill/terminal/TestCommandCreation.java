@@ -14,12 +14,6 @@ public class TestCommandCreation {
     private final String make_order = "make_order";
     private final String settle_bill = "settle_bill";
 
-
-    @Test(expected = InvalidCommand.class)
-    public void anInvalidCommandThrowsException() {
-        Command.toCommand(AN_INVALID_COMMAND_STRING);
-    }
-
     @Test
     public void stringInputIsRequestMenu() {
         assertThat(Command.toCommand(request_menu), is(REQUEST_MENU));
