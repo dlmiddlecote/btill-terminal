@@ -30,9 +30,6 @@ public class BtillServer implements Server {
         try {
             service = (StreamConnectionNotifier) Connector.open(serviceUri);
             System.out.println("Waiting...");
-            /*StreamConnection connection = service.acceptAndOpen();
-            InputStream incomingStream = connection.openInputStream();
-            OutputStream out = connection.openOutputStream();*/
 
 
             while (true) {
@@ -44,7 +41,7 @@ public class BtillServer implements Server {
                 //DataInputStream incomingStream = new DataInputStream(connection.openDataInputStream());
                 System.out.println("Input Stream Opened");
                 //String receivedString = incomingStream.readUTF();
-                byte[] byteArray = new byte[2048];
+                byte[] byteArray = new byte[1024];
                 int bytes = 0;
                 bytes = incomingStream.read(byteArray);
                 String readMessageCount = new String(byteArray, 0, bytes);
@@ -60,23 +57,11 @@ public class BtillServer implements Server {
                 }
 
 
-
-                //incomingStream.close();
-               // String receivedString = new String(byteArray, 0, bytes);
                 System.out.println("Read " + bytesTotal + " bytes, Received string: " + receivedString);
                 BTMessage incomingMessage = new BTMessageBuilder(receivedString.getBytes()).build();
 
                 BTMessage responseMessage = controller.processRequest(toCommand(incomingMessage.getHeader()), incomingMessage.getBody());
                 System.out.println("Length: " + responseMessage.getBytes().length);
-                //out.write(responseMessage.getBytes());
-                /*if (responseMessage.getBytes().length > 990) {
-                    out.write(responseMessage.getBytes(), 0, 990);
-                    out.flush();
-                    out.write(responseMessage.getBytes(), 990, responseMessage.getBytes().length-990);
-                }
-                else {
-                    out.write(responseMessage.getBytes());
-                }*/
 
                 int start = 0;
                 Integer readCount = (responseMessage.getBytes().length / 990) + 1;
@@ -99,8 +84,9 @@ public class BtillServer implements Server {
                     lengthLeft -= 990;
                 }
                 System.out.println("Written to phone");
-                //out.close();
-               //connection.close();
+                incomingStream.close();
+                out.close();
+               connection.close();
 
             }
         } catch (IOException e) {

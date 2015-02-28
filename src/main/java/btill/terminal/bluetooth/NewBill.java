@@ -11,7 +11,7 @@ import org.bitcoinj.uri.BitcoinURIParseException;
 
 import java.io.Serializable;
 
-public class NewBill implements Serializable{
+public class NewBill implements Serializable {
     private byte[] request;
     private GBP amount;
 
