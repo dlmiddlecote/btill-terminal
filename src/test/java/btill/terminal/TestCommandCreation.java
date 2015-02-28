@@ -17,7 +17,7 @@ public class TestCommandCreation {
 
     @Test(expected = InvalidCommand.class)
     public void anInvalidCommandThrowsException() {
-//        Command.toCommand(AN_INVALID_COMMAND_STRING);
+        Command.toCommand(AN_INVALID_COMMAND_STRING);
     }
 
     @Test
