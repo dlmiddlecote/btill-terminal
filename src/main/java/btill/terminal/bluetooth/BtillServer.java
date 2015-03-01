@@ -41,7 +41,7 @@ public class BtillServer implements Server {
                 //DataInputStream incomingStream = new DataInputStream(connection.openDataInputStream());
                 System.out.println("Input Stream Opened");
                 //String receivedString = incomingStream.readUTF();
-                byte[] byteArray = new byte[1024];
+                /*byte[] byteArray = new byte[1024];
                 int bytes = 0;
                 bytes = incomingStream.read(byteArray);
                 String readMessageCount = new String(byteArray, 0, bytes);
@@ -54,10 +54,19 @@ public class BtillServer implements Server {
                     bytes = incomingStream.read(byteArray);
                     bytesTotal += bytes;
                     receivedString += new String(byteArray, 0, bytes);
+                }*/
+                byte[] buffer = new byte[990];
+                int readBytes = 990;
+                ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+                while (readBytes==990) {
+                    readBytes = incomingStream.read(buffer);
+                    os.write(buffer, 0, readBytes);
                 }
 
-
-                System.out.println("Read " + bytesTotal + " bytes, Received string: " + receivedString);
+                String receivedString = os.toString();
+                System.out.println("Received: " + receivedString);
+                //System.out.println("Read " + bytesTotal + " bytes, Received string: " + receivedString);
                 BTMessage incomingMessage = new BTMessageBuilder(receivedString.getBytes()).build();
 
                 BTMessage responseMessage = controller.processRequest(toCommand(incomingMessage.getHeader()), incomingMessage.getBody());
@@ -67,7 +76,7 @@ public class BtillServer implements Server {
                 Integer readCount = (responseMessage.getBytes().length / 990) + 1;
                 int lengthLeft = responseMessage.getBytes().length;
                 System.out.println("Length: " + readCount);
-                out.write(readCount.toString().getBytes());
+                //out.write(readCount.toString().getBytes());
                 System.out.println("Written: " + readCount.toString());
                 //out.flush();
                 for (int i = 0; i < readCount; i++) {
