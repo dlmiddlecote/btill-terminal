@@ -20,7 +20,7 @@ public class BitcoinTill implements Till {
 
     private final GBP2SatoshisExchangeRate exchange;
 
-    private Wallet wallet = null;
+    private WalletKitThread _walletKitThread = null;
     private String memo = null;
     private String paymentURL = null;
     private byte[] merchantData = null;
@@ -38,7 +38,7 @@ public class BitcoinTill implements Till {
         billBuilder.setMemo(memo);
         billBuilder.setPaymentURL(paymentURL);
         billBuilder.setMerchantData(merchantData);
-        billBuilder.setWallet(wallet);
+        billBuilder.setWallet(getWallet());
         return billBuilder.build();
     }
 
@@ -48,7 +48,7 @@ public class BitcoinTill implements Till {
         billBuilder.setMemo(memo);
         billBuilder.setPaymentURL(paymentURL);
         billBuilder.setMerchantData(merchantData);
-        billBuilder.setWallet(wallet);
+        billBuilder.setWallet(getWallet());
         return billBuilder.build();
     }
 
@@ -104,7 +104,7 @@ public class BitcoinTill implements Till {
      * payment requests are directed.
      */
     public Address getWalletAddress() {
-        return wallet.currentReceiveAddress();
+        return getWallet().currentReceiveAddress();
     }
 
     /**
@@ -112,7 +112,7 @@ public class BitcoinTill implements Till {
      * requests are directed.
      */
     public Coin getWalletBalance() {
-        return wallet.getBalance();
+        return getWallet().getBalance();
     }
 
     /**
@@ -120,7 +120,7 @@ public class BitcoinTill implements Till {
      */
     public void saveWallet(File walletFile) {
         try {
-            wallet.saveToFile(walletFile);
+            getWallet().saveToFile(walletFile);
             System.err.println("Wallet saved to " + walletFile.getPath());
         } catch (IOException e) {
             System.err.println("Cannot save wallet to file "
@@ -151,5 +151,9 @@ public class BitcoinTill implements Till {
      */
     public void setMerchantData(byte[] merchantData) {
         merchantData = merchantData;
+    }
+
+    public Wallet getWallet(){
+        return _walletKitThread.getWalletAppKit().wallet();
     }
 }

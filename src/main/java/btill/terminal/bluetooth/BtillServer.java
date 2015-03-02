@@ -2,10 +2,10 @@ package btill.terminal.bluetooth;
 
 import btill.terminal.Server;
 import btill.terminal.values.BTMessage;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import org.apache.commons.io.IOUtils;
+//TODO RESTORE THIS import com.mashape.unirest.http.HttpResponse;
+//TODO RESTORE THIS import com.mashape.unirest.http.Unirest;
+//TODO RESTORE THIS import com.mashape.unirest.http.exceptions.UnirestException;
+//TODO RESTORE THIS import org.apache.commons.io.IOUtils;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
