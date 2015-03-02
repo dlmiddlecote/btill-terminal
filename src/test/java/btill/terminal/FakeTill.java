@@ -1,9 +1,6 @@
 package btill.terminal;
 
-import btill.terminal.values.Bill;
-import btill.terminal.values.GBP;
-import btill.terminal.values.Menu;
-import btill.terminal.values.Receipt;
+import btill.terminal.values.*;
 import org.bitcoin.protocols.payments.Protos.Payment;
 
 public class FakeTill implements Till {
@@ -18,8 +15,8 @@ public class FakeTill implements Till {
     }
 
     @Override
-    public GBP getGBP(Menu menu) {
-        return null;
+    public GBP getGBP(Order order) {
+        return order.total();
     }
 
     @Override

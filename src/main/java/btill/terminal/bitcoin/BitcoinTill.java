@@ -1,10 +1,7 @@
 package btill.terminal.bitcoin;
 
 import btill.terminal.*;
-import btill.terminal.values.Bill;
-import btill.terminal.values.GBP;
-import btill.terminal.values.Menu;
-import btill.terminal.values.Receipt;
+import btill.terminal.values.*;
 import org.bitcoin.protocols.payments.Protos;
 import org.bitcoin.protocols.payments.Protos.Payment;
 import org.bitcoinj.core.Address;
@@ -51,8 +48,8 @@ public class BitcoinTill implements Till {
     }
 
     @Override
-    public GBP getGBP(Menu menu) {
-        return null;
+    public GBP getGBP(Order order) {
+        return order.total();
     }
 
     @Override

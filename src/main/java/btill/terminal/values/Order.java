@@ -3,7 +3,6 @@ package btill.terminal.values;
 import java.util.Iterator;
 
 import static java.util.Arrays.asList;
-import static java.util.Arrays.sort;
 
 public class Order {
     private Menu order;
@@ -20,7 +19,6 @@ public class Order {
             MenuItem item = (MenuItem) iterator.next();
             runningTotal += item.getPrice().getPence() * item.getQuantity();
         }
-        System.out.println("Total = " + runningTotal);
         return new GBP(runningTotal);
     }
 

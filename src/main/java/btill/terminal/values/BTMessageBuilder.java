@@ -2,18 +2,21 @@ package btill.terminal.values;
 
 import btill.terminal.Status;
 import com.google.gson.Gson;
-import org.bitcoin.protocols.payments.Protos;
+import org.bitcoin.protocols.payments.Protos.Payment;
 
 public class BTMessageBuilder {
 
     private String header = null;
     private byte[] body = null;
 
-    public BTMessage build() { return new BTMessage(header, body); }
-
-    public BTMessageBuilder(String header) {
-        this.header = header;
+    public BTMessage build() {
+        return new BTMessage(header, body);
     }
+
+    // Do we need this?
+    //    public BTMessageBuilder(String header) {
+    //        this.header = header;
+    //    }
 
     public BTMessageBuilder(byte[] data) {
         BTMessage message = new Gson().fromJson(new String(data, 0, data.length), BTMessage.class);
@@ -21,15 +24,15 @@ public class BTMessageBuilder {
         this.body = message.getBody();
     }
 
-    public BTMessageBuilder(String header, byte[] body) {
-        this.header = header;
-        this.body = body;
-    }
+        public BTMessageBuilder(String header, byte[] body) {
+            this.header = header;
+            this.body = body;
+        }
 
-    public BTMessageBuilder(String header, String body) {
-        this.header = header;
-        this.body = body.getBytes();
-    }
+        public BTMessageBuilder(String header, String body) {
+            this.header = header;
+            this.body = body.getBytes();
+        }
 
     public BTMessageBuilder(Status status, String body) {
         this.header = status.toString();
@@ -40,7 +43,7 @@ public class BTMessageBuilder {
         this.header = status.toString();
     }
 
-    public BTMessageBuilder(Protos.Payment payment) {
+    public BTMessageBuilder(Payment payment) {
         this.header = "SETTLE_BILL";
         this.body = payment.toByteArray();
     }

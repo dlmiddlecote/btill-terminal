@@ -2,6 +2,7 @@ package btill.terminal;
 
 import btill.terminal.values.BTMessage;
 import btill.terminal.values.BTMessageBuilder;
+import org.bitcoinj.uri.BitcoinURIParseException;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;

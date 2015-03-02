@@ -25,11 +25,13 @@ public class Controller {
                 return new BTMessageBuilder(OK, menu).build();
             }
             case MAKE_ORDER: {
-                Menu order = deserializeMenu(content);
-                amount = till.getGBP(order);
+                Order order = new Order(deserializeMenu(content));
+                amount = order.total();
                 NewBill bill = new NewBill(amount);
-                bill.setRequest(bill.getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount="
-                                + till.getAmount(amount) + "&r=http://www.b-till.com&message=Payment%20for%20coffee"));
+                // THIS DOES NOT WORK
+//                bill.setRequest(bill.getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount="
+//                                + till.getAmount(amount) + "&r=http://www.b-till.com&message=Payment%20for%20coffee"));
+
                 BTMessage message = new BTMessageBuilder(OK, bill).build();
                 return message;
             }
