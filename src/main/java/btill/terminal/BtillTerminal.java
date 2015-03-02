@@ -7,8 +7,8 @@ import btill.terminal.bluetooth.Controller;
 import btill.terminal.values.GBP;
 import btill.terminal.values.Menu;
 import btill.terminal.values.MenuItem;
-//TODO import com.mashape.unirest.http.Unirest;
-//TODO import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 
 import javax.bluetooth.UUID;
 
@@ -23,9 +23,8 @@ public class BtillTerminal implements AutoCloseable {
 
     private Server server;
 
-    // TODO RESTORE THIS
     private static double penceExchangeRate() {
-        /*
+
         String gbp = null;
         try {
             gbp = Unirest.get("https://community-bitcointy.p.mashape.com/price/GBP")
@@ -38,7 +37,7 @@ public class BtillTerminal implements AutoCloseable {
         if (gbp != null) {
             Double pence = Double.parseDouble(gbp);
             return 1000000.0/pence;
-        }*/
+        }
         return 0.0;
     }
 

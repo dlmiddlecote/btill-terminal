@@ -1,21 +1,15 @@
 package btill.terminal.values;
 
+import org.bitcoin.protocols.payments.Protos;
 import org.bitcoinj.core.Coin;
+import org.bitcoinj.protocols.payments.PaymentProtocol;
 
 import java.util.Date;
 
 public class Receipt {
-    public static Receipt receipt(GBP gbp, Coin bitcoins) {
-        return new Receipt(new Date(), gbp, bitcoins);
-    }
+    private Protos.PaymentACK _paymentACK = null;
 
-    private final Date date;
-    private final GBP gbp;
-    private final Coin bitcoins;
-
-    public Receipt(Date date, GBP gbp, Coin bitcoins) {
-        this.date = date;
-        this.gbp = gbp;
-        this.bitcoins = bitcoins;
+    public Receipt(Protos.Payment forPayment) {
+        _paymentACK = PaymentProtocol.createPaymentAck(forPayment, "TRANSACTION SUCCEEDED:\n" + forPayment.getMemo());
     }
 }

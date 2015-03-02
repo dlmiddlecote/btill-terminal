@@ -6,6 +6,9 @@ import com.google.gson.Gson;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.bitcoin.protocols.payments.Protos.Payment;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 import static btill.terminal.bluetooth.Status.NOT_FOUND;
 import static btill.terminal.bluetooth.Status.OK;
 
@@ -29,17 +32,24 @@ public class Controller {
             }
             case MAKE_ORDER: {
                 newMenu = deserializeMenu(content);
-                //Bill bill = till.createBillForAmount(menu);
-                amount = till.getGBP(newMenu);
-                NewBill bill = new NewBill(amount);
-                bill.setRequest(bill.getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount=" + till.getAmount(amount) + "&r=http://www.b-till.com&message=Payment%20for%20coffee"));
+                Bill bill = till.createBillForAmount(menu);
                 BTMessage message = new BTMessageBuilder(OK, bill).build();
                 return message;
             }
             case SETTLE_BILL: {
-                Payment payment = deserializePayment(content);
-                System.out.println("Amount: " + amount.toString());
-                Receipt receipt = till.settleBillUsing(payment, amount);
+                SignedBill signedBill = deserializeSignedBill(content);
+                //System.out.println("Amount: " + amount.toString());
+                Future<Receipt> receiptFuture = till.settleBillUsing(signedBill);
+                Receipt receipt = null;
+                try {
+                    receipt = receiptFuture.get();
+                } catch (InterruptedException e) {
+                    System.err.println("\nReceipt retrieval interrupted"); // TODO CHANGE TO LOGGING FORMAT
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    System.err.println("\nReceipt retrieval exception interrupted!"); // TODO CHANGE TO LOGGING FORMAT
+                    e.printStackTrace();
+                }
                 return new BTMessageBuilder(OK, receipt).build();
             }
             default: {
@@ -53,12 +63,7 @@ public class Controller {
         return new Gson().fromJson(new String(content, 0, content.length), Menu.class);
     }
 
-    private Payment deserializePayment(byte[] content) {
-        try {
-            return new Gson().fromJson(new String(content, 0, content.length), SignedBill.class).getPayment();
-        } catch (InvalidProtocolBufferException e) {
-            System.out.println("Error reading payment");
-            return null;
-        }
+    private SignedBill deserializeSignedBill(byte[] content) {
+        return new Gson().fromJson(new String(content, 0, content.length), SignedBill.class);
     }
 }
