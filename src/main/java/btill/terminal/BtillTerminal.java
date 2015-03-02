@@ -61,11 +61,13 @@ public class BtillTerminal implements AutoCloseable {
                 new MenuItem("Nachos", new GBP(500), "Sides"),
                 new MenuItem("Quesadilla", new GBP(400), "Mains"),
                 new MenuItem("Tacos", new GBP(600), "Mains"),
-                new MenuItem("Guacamole", new GBP(200), "Dips"),
+                new MenuItem("Guacamole", new GBP(200), "Sides"),
                 new MenuItem("Garlic & Herb", new GBP(50), "Dips"),
                 new MenuItem("Spicy Rice", new GBP(300), "Sides"),
                 new MenuItem("Horchata", new GBP(350), "Drinks"),
-                new MenuItem("Mojito", new GBP(700), "Drinks")
+                new MenuItem("Mojito", new GBP(700), "Drinks"),
+                new MenuItem("Cheesecake", new GBP(400), "Desserts")
+
 
         ));
     }
