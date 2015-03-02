@@ -8,8 +8,6 @@ import static org.junit.Assert.assertThat;
 
 public class TestCommandCreation {
 
-    private static final String AN_INVALID_COMMAND_STRING = "invalid";
-
     private final String request_menu = "request_menu";
     private final String make_order = "make_order";
     private final String settle_bill = "settle_bill";
@@ -28,4 +26,11 @@ public class TestCommandCreation {
     public void stringInputIsSettleBill() {
         assertThat(Command.toCommand(settle_bill), is(SETTLE_BILL));
     }
+
+    @Test(expected = RuntimeException.class)
+    public void nullCommandThrowsRuntimeException() {
+        Command.toCommand(null);
+    }
+
+
 }

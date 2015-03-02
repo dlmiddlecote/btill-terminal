@@ -4,7 +4,6 @@ import btill.terminal.values.Bill;
 import btill.terminal.values.GBP;
 import btill.terminal.values.Menu;
 import btill.terminal.values.Receipt;
-import org.bitcoin.protocols.payments.Protos;
 import org.bitcoin.protocols.payments.Protos.Payment;
 
 public class FakeTill implements Till {
@@ -27,5 +26,5 @@ public class FakeTill implements Till {
     public String getAmount(GBP amount) {
         return null;
     }
-    
+
 }
