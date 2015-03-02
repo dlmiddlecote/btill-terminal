@@ -43,20 +43,6 @@ public class BtillServer implements Server {
                 //String receivedString = incomingStream.readUTF();
                 byte[] byteArray = new byte[1024];
                 int bytes = 0;
-                /* bytes = incomingStream.read(byteArray);
-                String readMessageCount = new String(byteArray, 0, bytes);
-                Integer readCountIn = Integer.parseInt(readMessageCount);
-                String receivedString = new String();
-                bytes = 0;
-                int bytesTotal = 0;
-
-                for (int i = 0; i < readCountIn.intValue(); i++) {
-                    bytes = incomingStream.read(byteArray);
-                    bytesTotal += bytes;
-                    receivedString += new String(byteArray, 0, bytes);
-                }
-                */
-
                 boolean read = true;
                 int bytesTotal = 0;
                 String receivedString = new String();
