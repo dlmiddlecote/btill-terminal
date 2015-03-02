@@ -41,9 +41,9 @@ public class BtillServer implements Server {
                 //DataInputStream incomingStream = new DataInputStream(connection.openDataInputStream());
                 System.out.println("Input Stream Opened");
                 //String receivedString = incomingStream.readUTF();
-                /*byte[] byteArray = new byte[1024];
+                byte[] byteArray = new byte[1024];
                 int bytes = 0;
-                bytes = incomingStream.read(byteArray);
+                /* bytes = incomingStream.read(byteArray);
                 String readMessageCount = new String(byteArray, 0, bytes);
                 Integer readCountIn = Integer.parseInt(readMessageCount);
                 String receivedString = new String();
@@ -54,48 +54,40 @@ public class BtillServer implements Server {
                     bytes = incomingStream.read(byteArray);
                     bytesTotal += bytes;
                     receivedString += new String(byteArray, 0, bytes);
-                }*/
-                byte[] buffer = new byte[990];
-                int readBytes = 990;
-                ByteArrayOutputStream os = new ByteArrayOutputStream();
+                }
+                */
 
-                while (readBytes==990) {
-                    readBytes = incomingStream.read(buffer);
-                    os.write(buffer, 0, readBytes);
+                boolean read = true;
+                int bytesTotal = 0;
+                String receivedString = new String();
+                while (read) {
+                    bytes = incomingStream.read(byteArray);
+                    bytesTotal += bytes;
+                    receivedString += new String(byteArray, 0, bytes);
+                    if (bytes != 990) {
+                        read = false;
+                    }
                 }
 
-                String receivedString = os.toString();
-                System.out.println("Received: " + receivedString);
-                //System.out.println("Read " + bytesTotal + " bytes, Received string: " + receivedString);
+                System.out.println("Read " + bytesTotal + " bytes, Received string: " + receivedString);
                 BTMessage incomingMessage = new BTMessageBuilder(receivedString.getBytes()).build();
 
                 BTMessage responseMessage = controller.processRequest(toCommand(incomingMessage.getHeader()), incomingMessage.getBody());
                 System.out.println("Length: " + responseMessage.getBytes().length);
 
-                int start = 0;
-                Integer readCount = (responseMessage.getBytes().length / 990) + 1;
-                int lengthLeft = responseMessage.getBytes().length;
-                System.out.println("Length: " + readCount);
-                //out.write(readCount.toString().getBytes());
-                System.out.println("Written: " + readCount.toString());
-                //out.flush();
-                for (int i = 0; i < readCount; i++) {
-                    if (lengthLeft < 990) {
-                        out.write(responseMessage.getBytes(), start, lengthLeft);
-                        System.out.println("Written: " + new String(responseMessage.getBytes(), start, lengthLeft));
-                    }
-                    else {
-                        out.write(responseMessage.getBytes(), start, 990);
-                        System.out.println("Written: " + new String(responseMessage.getBytes(), start, 990));
-                    }
+                byte[] messageBytes = responseMessage.getBytes();
+                int remaining = messageBytes.length;
+                for (int i = 0; i <= (messageBytes.length / 990); i++) {
+                    out.write(messageBytes, i * 990, Math.min(990, remaining));
+                    System.out.println("Written: " + new String(messageBytes, i * 990, Math.min(990, remaining)));
                     out.flush();
-                    start += 990;
-                    lengthLeft -= 990;
+                    remaining -= 990;
                 }
+
                 System.out.println("Written to phone");
                 incomingStream.close();
                 out.close();
-               connection.close();
+                connection.close();
 
             }
         } catch (IOException e) {
