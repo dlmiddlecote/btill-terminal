@@ -6,9 +6,9 @@ import static java.util.Arrays.asList;
 
 public class TestMakePayment {
 
-    private Menu orderFromResultOf(BtillResponse response) {
-        return new TestController().deserialize(response.body());
-    }
+//    private Menu orderFromResultOf(BtillResponse response) {
+//        return new TestController().deserialize(response.body());
+//    }
 
 //    private BtillResponse runTest() {
 //        Menu fakeMenu = new Menu(asList(cider, bitter, burger, lager));

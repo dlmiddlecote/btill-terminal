@@ -3,7 +3,9 @@ package btill.terminal.bitcoin;
 import btill.terminal.*;
 import btill.terminal.values.Bill;
 import btill.terminal.values.GBP;
+import btill.terminal.values.Menu;
 import btill.terminal.values.Receipt;
+import org.bitcoin.protocols.payments.Protos;
 import org.bitcoin.protocols.payments.Protos.Payment;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
@@ -41,6 +43,21 @@ public class BitcoinTill implements Till {
         billBuilder.setMerchantData(merchantData);
         billBuilder.setWallet(wallet);
         return billBuilder.build();
+    }
+
+    @Override
+    public Receipt settleBillUsing(Payment payment, GBP amount) {
+        return null;
+    }
+
+    @Override
+    public GBP getGBP(Menu menu) {
+        return null;
+    }
+
+    @Override
+    public String getAmount(GBP amount) {
+        return null;
     }
 
     public Bill createBillForAmount(Coin amount) {

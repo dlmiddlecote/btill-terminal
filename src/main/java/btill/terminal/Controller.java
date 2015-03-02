@@ -2,6 +2,7 @@ package btill.terminal;
 
 import btill.terminal.values.*;
 import com.google.gson.Gson;
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.bitcoin.protocols.payments.Protos.Payment;
 
 import static btill.terminal.Status.NOT_FOUND;
@@ -10,41 +11,46 @@ import static btill.terminal.Status.OK;
 public class Controller {
     private final Menu menu;
     private final Till till;
+    private GBP amount;
 
     public Controller(Menu menu, Till till) {
         this.menu = menu;
         this.till = till;
     }
 
-    public BtillResponse processRequest(Command command, String content) {
+    public BTMessage processRequest(Command command, byte[] content) throws InvalidProtocolBufferException {
 
         switch (command) {
             case REQUEST_MENU: {
-                return new BtillResponse(OK, serialize(menu));
+                return new BTMessageBuilder(OK, menu).build();
             }
             case MAKE_ORDER: {
-                Menu menu = deserializeMenu(content);
-                Bill bill = till.createBillForAmount(new Order(menu).total());
-                return new BtillResponse(OK, serialize(bill));
+                Menu order = deserializeMenu(content);
+                amount = till.getGBP(order);
+                NewBill bill = new NewBill(amount);
+                bill.setRequest(bill.getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount="
+                                + till.getAmount(amount) + "&r=http://www.b-till.com&message=Payment%20for%20coffee"));
+                BTMessage message = new BTMessageBuilder(OK, bill).build();
+                return message;
             }
             case SETTLE_BILL: {
                 Payment payment = deserializePayment(content);
-                Receipt receipt = till.settleBillUsing(payment);
-                return new BtillResponse(OK, serialize(receipt));
+                Receipt receipt = till.settleBillUsing(payment, amount);
+                return new BTMessageBuilder(OK, receipt).build();
             }
             default: {
-                return new BtillResponse(NOT_FOUND, "");
+                return new BTMessageBuilder(NOT_FOUND).build();
             }
         }
 
     }
 
-    private Menu deserializeMenu(String content) {
-        return new Gson().fromJson(content, Menu.class);
+    private Menu deserializeMenu(byte[] content) {
+        return new Gson().fromJson(new String(content, 0, content.length), Menu.class);
     }
 
-    private Payment deserializePayment(String content) {
-        return new Gson().fromJson(content, Payment.class);
+    private Payment deserializePayment(byte[] content) throws InvalidProtocolBufferException {
+        return new Gson().fromJson(new String(content, 0, content.length), SignedBill.class).getPayment();
     }
 
     private String serialize(Bill bill) {
