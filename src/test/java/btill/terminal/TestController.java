@@ -3,6 +3,7 @@ package btill.terminal;
 import btill.terminal.values.*;
 import com.google.gson.Gson;
 import com.google.protobuf.InvalidProtocolBufferException;
+import org.bitcoin.protocols.payments.Protos;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
@@ -31,15 +32,15 @@ public class TestController {
         assertThat(message.getBody(), is(menuBytes));
     }
 
-    @Test
-    public void headerIsOKIfCommandIsMakeOrder() throws InvalidProtocolBufferException {
-        assertThat(runMakeOrderSequence().getHeader(), is("OK"));
-    }
-
     public BTMessage runMakeOrderSequence() throws InvalidProtocolBufferException {
         fakeItem.setQuantity(1);
         final Menu fakeMenu2 = new Menu(asList(fakeItem));
         return controller.processRequest(Command.MAKE_ORDER, getBytes(fakeMenu2));
+    }
+
+    @Test
+    public void headerIsOKIfCommandIsMakeOrder() throws InvalidProtocolBufferException {
+        assertThat(runMakeOrderSequence().getHeader(), is("OK"));
     }
 
     @Test
@@ -51,67 +52,16 @@ public class TestController {
         assertThat(bill.toString(), is("Bill for £3.00"));
     }
 
+    // not sure how to create a fake payment to put into this test
+//    @Test
+//    public void headerISOKIfCommandIsSettleBill() {
+//        controller.processRequest(Command.SETTLE_BILL, );
+//    }
 
-    //
-//    // Doesn't work with the PaymentRequest? Why?
-//    @Test
-//    public void headerIsOkIfCommandIsValid() {
-//        BtillResponse fakeMenuResponse = controller.processRequest(Command.REQUEST_MENU, "");
-//        BtillResponse fakeReceiptResponse = controller.processRequest(Command.SETTLE_BILL, "");
-//        assertThat(fakeMenuResponse.status(), is("OK"));
-//        assertThat(fakeReceiptResponse.status(), is("OK"));
-//    }
 //
-//    @Test
-//    public void returnMenuWhenRequested() {
-//        String serializedMenu = serialize(fakeMenu);
-//        BtillResponse fakeMenuResponse = controller.processRequest(Command.REQUEST_MENU, "");
-//        assertThat(fakeMenuResponse.body(), is(serializedMenu));
-//    }
-//
-//    @Test
-//    public void returnPaymentRequestWhenOrderReceived() {
-//        Bill fakeBill = fakeTill.createBillForAmount(fakeOrder.total());
-//        String serializedOrder = serialize(returnedOrder);
-//        String serializedBill = serialize(fakeBill);
-//        BtillResponse fakeBillResponse = controller.processRequest(Command.MAKE_ORDER, serializedOrder);
-//        assertThat(fakeBillResponse.body(), is(serializedBill));
-//    }
-//
-//
-//    public String serialize(Bill bill) {
-//        return new Gson().toJson(bill);
-//    }
-//
-//    public String serialize(Menu menu) {
-//        return new Gson().toJson(menu);
-//    }
-//
-    public NewBill deserialize(String body) {
+    private NewBill deserialize(String body) {
         return new Gson().fromJson(body, NewBill.class);
     }
-
-
-//    How can I create a fakePayment for testing?
-//    @Test public void returnReceiptWhenPaymentReceived() {
-//
-//
-//        Receipt fakeReceipt = Receipt.receipt(new GBP(100));
-//
-//        String serializedPayment = serialize(fakePayment);
-//        String serializedReceipt = serialize(fakeReceipt);
-//        BtillResponse fakeReceiptResponse = controller.processRequest(Command.SETTLE_BILL, serializedPayment);
-//        assertThat(fakeReceiptResponse.body(), is(serializedReceipt));
-//    }
-//    For unused test
-//    private String serialize(Payment payment) {
-//        return new Gson().toJson(payment);
-//    }
-//
-//    private String serialize(Receipt receipt) {
-//        return new Gson().toJson(receipt);
-//    }
-
 
     private byte[] getBytes(Object object) {
         String json = new Gson().toJson(object, object.getClass());

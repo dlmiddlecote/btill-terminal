@@ -77,12 +77,6 @@ public class Menu implements Iterable<MenuItem> {
         return items.size();
     }
 
-    /*public void resetQuantities() {
-        for (MenuItem item : items) {
-            item.setQuantity(0);
-        }
-    }*/
-
     public ArrayList<MenuItem> getCategoryItems(String category) {
         ArrayList<MenuItem> sortedItems = new ArrayList<MenuItem>();
         for (MenuItem item : items) {

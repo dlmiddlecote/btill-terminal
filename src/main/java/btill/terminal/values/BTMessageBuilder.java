@@ -23,16 +23,16 @@ public class BTMessageBuilder {
         this.header = message.getHeader();
         this.body = message.getBody();
     }
-
-        public BTMessageBuilder(String header, byte[] body) {
-            this.header = header;
-            this.body = body;
-        }
-
-        public BTMessageBuilder(String header, String body) {
-            this.header = header;
-            this.body = body.getBytes();
-        }
+//
+//        public BTMessageBuilder(String header, byte[] body) {
+//            this.header = header;
+//            this.body = body;
+//        }
+//
+//        public BTMessageBuilder(String header, String body) {
+//            this.header = header;
+//            this.body = body.getBytes();
+//        }
 
     public BTMessageBuilder(Status status, String body) {
         this.header = status.toString();

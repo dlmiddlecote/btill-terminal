@@ -12,13 +12,10 @@ public class Receipt {
 
     private final Date date;
     private final GBP gbp;
-    // private final Coin bitcoins = null;
-    // do we want to have bitcoins included in the receipt?
 
     public Receipt(Date date, GBP gbp, Coin bitcoins) {
         this.date = date;
         this.gbp = gbp;
-//        this.bitcoins = bitcoins;
     }
 
 
