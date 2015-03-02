@@ -18,14 +18,16 @@ public class Order {
         Iterator iterator = this.order.iterator();
         while (iterator.hasNext()) {
             MenuItem item = (MenuItem) iterator.next();
-            runningTotal += item.cost().getPence() * item.quantity();
+            runningTotal += item.getPrice().getPence() * item.getQuantity();
         }
         System.out.println("Total = " + runningTotal);
         return new GBP(runningTotal);
     }
 
     public static void main(String[] args) {
-        Menu menu = new Menu(asList(new MenuItem("lager", new GBP(300), 3)));
+        MenuItem item = new MenuItem("lager", new GBP(300), "drink");
+        item.setQuantity(3);
+        Menu menu = new Menu(asList(item));
         Order order = new Order(menu);
         GBP total = order.total();
         System.out.println("Total = " + total);

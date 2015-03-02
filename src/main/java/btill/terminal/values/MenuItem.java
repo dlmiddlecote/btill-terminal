@@ -6,26 +6,47 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class MenuItem {
     private final String name;
     private final GBP price;
-    private int quantity;
+    private int quantity = 0;
+    private String category;
 
-    public MenuItem(String name, GBP price) {
-        this.name = name;
-        this.price = price;
-        this.quantity = 0;
+    public String getCategory() {
+        return category;
     }
 
-    public MenuItem(String name, GBP price, int quantity) {
-        this.name = name;
-        this.price = price;
-        this.quantity = quantity;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-    public GBP cost() {
+    public String getName() {
+        return name;
+    }
+
+    public GBP getPrice() {
         return price;
     }
 
-    public int quantity() {
+    public int getQuantity() {
         return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public MenuItem(String name, GBP price, String category) {
+        this.name = name;
+        this.price = price;
+        this.category = category;
+    }
+
+    public void incrementQuantity() {
+        if (quantity < 10)
+            this.quantity++;
+    }
+
+    public void decrementQuantity() {
+        if (quantity > 0)
+            this.quantity--;
     }
 
     @Override

@@ -16,8 +16,8 @@ import static org.junit.Assert.assertThat;
 
 public class TestController {
 
-    private final Menu fakeMenu = new Menu(asList(new MenuItem("lager", new GBP(375))));
-    private final Menu returnedOrder = new Menu(asList(new MenuItem("cider", new GBP(350), 2)));
+    private final Menu fakeMenu = new Menu(asList(new MenuItem("lager", new GBP(375), "drink")));
+    private final Menu returnedOrder = new Menu(asList(new MenuItem("cider", new GBP(350), "drink")));
     private final Till fakeTill = new FakeTill();
     private final Order fakeOrder = new Order(returnedOrder);
     private Controller controller = new Controller(fakeMenu, fakeTill);

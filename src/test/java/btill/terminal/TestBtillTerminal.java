@@ -13,7 +13,7 @@ import static java.util.Arrays.asList;
 public class TestBtillTerminal {
 
     private GBP price = new GBP(375);
-    MenuItem fakeItem = new MenuItem("fakeItem", price);
+    MenuItem fakeItem = new MenuItem("fakeItem", price, "category");
     private Menu fakeMenu = createMenu();
 
 //

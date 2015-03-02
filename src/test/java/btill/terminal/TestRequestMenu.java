@@ -11,10 +11,10 @@ import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertThat;
 
 public class TestRequestMenu {
-    private final MenuItem bitter = new MenuItem("bitter", new GBP(325));
-    private final MenuItem lager = new MenuItem("lager", new GBP(375));
-    private final MenuItem cider = new MenuItem("cider", new GBP(350));
-    private final MenuItem burger = new MenuItem("burger", new GBP(800));
+    private final MenuItem bitter = new MenuItem("bitter", new GBP(325), "drink");
+    private final MenuItem lager = new MenuItem("lager", new GBP(375), "drink");
+    private final MenuItem cider = new MenuItem("cider", new GBP(350), "drink");
+    private final MenuItem burger = new MenuItem("burger", new GBP(800), "drink");
 
     @Test
     public void menuContainingItemsIsReturned() {
