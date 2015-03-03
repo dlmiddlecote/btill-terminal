@@ -13,6 +13,7 @@ import javax.bluetooth.UUID;
 import static java.util.Arrays.asList;
 
 public class BtillTerminal implements AutoCloseable {
+    //private static final double CONVERSION_RATE = 5854.8;
     private static final double CONVERSION_RATE = penceExchangeRate();
     public static final UUID SERVICE_ID = new UUID("0000110100001000800000805F9B34FB", false);
     public static final String SERVICE_NAME = "helloService";
@@ -20,8 +21,8 @@ public class BtillTerminal implements AutoCloseable {
 
     private Server server;
 
-
     private static double penceExchangeRate() {
+
         String gbp = null;
         try {
             gbp = Unirest.get("https://community-bitcointy.p.mashape.com/price/GBP")
@@ -83,5 +84,4 @@ public class BtillTerminal implements AutoCloseable {
             terminal.startUsing(server, createTill());
         }
     }
-
 }

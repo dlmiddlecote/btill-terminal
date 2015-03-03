@@ -1,7 +1,8 @@
 package btill.terminal;
 
 import btill.terminal.values.*;
-import org.bitcoin.protocols.payments.Protos.Payment;
+
+import java.util.concurrent.Future;
 
 public class FakeTill implements Till {
     @Override
@@ -10,7 +11,7 @@ public class FakeTill implements Till {
     }
 
     @Override
-    public Receipt settleBillUsing(Payment payment, GBP amount) {
+    public Future<Receipt> settleBillUsing(SignedBill signedBill) {
         return null;
     }
 

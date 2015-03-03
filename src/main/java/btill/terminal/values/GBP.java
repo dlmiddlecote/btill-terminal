@@ -19,6 +19,18 @@ public class GBP {
         return pence;
     }
 
+    public GBP plus(GBP that) {
+        return new GBP(pence + that.pence);
+    }
+
+    public GBP minus(GBP that) {
+        return new GBP(pence - that.pence);
+    }
+
+    public GBP times(int mult) {
+        return new GBP(pence * mult);
+    }
+
     @Override
     public String toString() {
         float f = (float) (pence / 100.0);

@@ -3,7 +3,9 @@ package btill.terminal;
 import btill.terminal.values.*;
 import com.google.gson.Gson;
 import com.google.protobuf.InvalidProtocolBufferException;
-import org.bitcoin.protocols.payments.Protos.Payment;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import static btill.terminal.Status.NOT_FOUND;
 import static btill.terminal.Status.OK;
@@ -39,8 +41,19 @@ public class Controller {
                 return message;
             }
             case SETTLE_BILL: {
-                Payment payment = deserializePayment(content);
-                Receipt receipt = till.settleBillUsing(payment, amount);
+                SignedBill signedBill = deserializeSignedBill(content);
+                //System.out.println("Amount: " + amount.toString());
+                Future<Receipt> receiptFuture = till.settleBillUsing(signedBill);
+                Receipt receipt = null;
+                try {
+                    receipt = receiptFuture.get();
+                } catch (InterruptedException e) {
+                    System.err.println("\nReceipt retrieval interrupted"); // TODO CHANGE TO LOGGING FORMAT
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    System.err.println("\nReceipt retrieval exception interrupted!"); // TODO CHANGE TO LOGGING FORMAT
+                    e.printStackTrace();
+                }
                 return new BTMessageBuilder(OK, receipt).build();
             }
             default: {
@@ -54,7 +67,7 @@ public class Controller {
         return new Gson().fromJson(new String(content, 0, content.length), Menu.class);
     }
 
-    private Payment deserializePayment(byte[] content) throws InvalidProtocolBufferException {
-        return new Gson().fromJson(new String(content, 0, content.length), SignedBill.class).getPayment();
+    private SignedBill deserializeSignedBill(byte[] content) {
+        return new Gson().fromJson(new String(content, 0, content.length), SignedBill.class);
     }
 }
