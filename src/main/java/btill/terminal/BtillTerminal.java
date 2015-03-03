@@ -16,7 +16,7 @@ import static java.util.Arrays.asList;
 
 public class BtillTerminal implements AutoCloseable {
     //private static final double CONVERSION_RATE = 5854.8;
-    private static final double CONVERSION_RATE = penceExchangeRate();
+    private static final double CONVERSION_RATE = 5641; //penceExchangeRate();
     public static final UUID SERVICE_ID = new UUID("0000110100001000800000805F9B34FB", false);
     public static final String SERVICE_NAME = "helloService";
     public static final String SERVICE_HOST = "btspp://localhost:";
@@ -35,6 +35,7 @@ public class BtillTerminal implements AutoCloseable {
         }
         if (gbp != null) {
             Double pence = Double.parseDouble(gbp);
+            System.out.println("Exchange Rate: " + 1000000.0/pence);
             return 1000000.0/pence;
         }
         return 0.0;
