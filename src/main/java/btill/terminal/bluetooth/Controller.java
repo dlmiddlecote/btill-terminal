@@ -6,6 +6,8 @@ import com.google.gson.Gson;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.bitcoin.protocols.payments.Protos.Payment;
 
+import java.util.Random;
+
 import static btill.terminal.bluetooth.Status.NOT_FOUND;
 import static btill.terminal.bluetooth.Status.OK;
 
