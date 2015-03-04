@@ -53,7 +53,7 @@ public class WalletKitThread extends Thread {
                 _walletAppKit.peerGroup().setBloomFilterFalsePositiveRate(0.0001);
                 _walletAppKit.peerGroup().setMaxConnections(11);
                 _walletAppKit.peerGroup().setFastCatchupTimeSecs(_walletAppKit.wallet().getEarliestKeyCreationTime());
-
+                System.out.println(_walletAppKit.wallet().toString());
                 System.out.println(filePrefix + ": Wallet App Kit Setup Complete");
                 _setupComplete = true;
             }
@@ -62,7 +62,8 @@ public class WalletKitThread extends Thread {
         _walletAppKit.startAsync();
         System.out.println(_filePrefix + ": Wallet App Kit Started");
         //Log.d(TAG, "WalletAppKit has started"); // TODO: RESTORE LOGGING
-        _walletAppKit.awaitRunning();
+
+       // _walletAppKit.awaitRunning();
         System.out.println(_filePrefix + ": Wallet App Running");
         //Log.d(TAG, "WalletAppKit is running"); // TODO: RESTORE LOGGING
         _isRunning = true;
