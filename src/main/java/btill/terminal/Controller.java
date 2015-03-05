@@ -29,12 +29,10 @@ public class Controller {
             case MAKE_ORDER: {
                 Order order = new Order(deserializeMenu(content));
                 amount = order.total();
-                NewBill bill = new NewBill(amount);
 
-
-//                THIS DOES NOT WORK
-//                bill.setRequest(bill.getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount="
-//                                + till.getAmount(amount) + "&r=http://www.b-till.com&message=Payment%20for%20coffee"));
+                Bill bill = new Bill(amount);
+                bill.setRequest(bill.getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount="
+                                + till.getAmount(amount) + "&r=http://www.b-till.com&message=Payment%20for%20coffee"));
 
 
                 BTMessage message = new BTMessageBuilder(OK, bill).build();
