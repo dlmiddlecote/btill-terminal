@@ -14,6 +14,7 @@ public class BillBuilder {
     private Wallet wallet = null;
     private GBP gbpAmount = null;
 
+
     Bill build() {
         return new Bill(memo, paymentURL, merchantData, amount, gbpAmount, wallet);
     }
