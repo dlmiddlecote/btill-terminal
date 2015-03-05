@@ -84,7 +84,7 @@ public class BitcoinTill implements Till {
         return totalCost;
     }
 
-    public Future<Receipt> settleBillUsing(SignedBill signedBill) {
+    /*public Future<Receipt> settleBillUsing(SignedBill signedBill) {
 
         receipt = null;
 
@@ -145,6 +145,42 @@ public class BitcoinTill implements Till {
                 //return null;
             }
         });
+    }*/
+
+    public Receipt settleBillUsing(SignedBill signedBill) {
+
+
+        System.out.println("\nReceived Bill");
+        Transaction tx = null;
+        try {
+            tx = new Transaction(walletKitThread.getWalletAppKit().params(),
+                    signedBill.getPayment().getTransactions(0).toByteArray());
+        } catch (InvalidProtocolBufferException e) {
+            e.printStackTrace();
+        }
+        getWallet().commitTx(tx);
+        System.out.println("\nCommitted Transaction");
+
+        Future<Transaction> transactionFuture = walletKitThread.getWalletAppKit().peerGroup().broadcastTransaction(tx);
+        System.out.println("\nBroadcast Transaction");
+        Transaction txReturn = null;
+        try {
+            txReturn = transactionFuture.get();
+            System.out.println("\nTransaction Broadcast Returned!");
+
+            try {
+                receipt = new Receipt(signedBill.getPayment(), signedBill.getGbpAmount(), signedBill.getBtcAmount());
+            } catch (InvalidProtocolBufferException e) {
+                e.printStackTrace();
+            }
+        } catch (InterruptedException e) {
+            System.err.println("\nReceipt retrieval interrupted"); // TODO CHANGE TO LOGGING FORMAT
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            System.err.println("\nReceipt retrieval exception interrupted!"); // TODO CHANGE TO LOGGING FORMAT
+            e.printStackTrace();
+        }
+        return receipt;
     }
 
     /*public Future<Receipt> settleBillUsing(SignedBill signedBill) {

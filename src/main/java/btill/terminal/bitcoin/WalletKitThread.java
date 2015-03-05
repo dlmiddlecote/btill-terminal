@@ -69,11 +69,7 @@ public class WalletKitThread extends Thread {
 
         _walletAppKit.awaitRunning();
         System.out.println(_filePrefix + ": Wallet App Running");
-        try {
-            _walletAppKit.peerGroup().addAddress(new PeerAddress(InetAddress.getByName("93.93.135.12"), 18333));
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
+
         //Log.d(TAG, "WalletAppKit is running"); // TODO: RESTORE LOGGING
         _isRunning = true;
     }

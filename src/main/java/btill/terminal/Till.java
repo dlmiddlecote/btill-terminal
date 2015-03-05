@@ -7,7 +7,7 @@ import java.util.concurrent.Future;
 
 public interface Till {
     Bill createBillForAmount(GBP amount);
-    Future<Receipt> settleBillUsing(SignedBill signedBill);
+    Receipt settleBillUsing(SignedBill signedBill);
     GBP getGBP(Order order);
     String getAmount(GBP amount);
 }

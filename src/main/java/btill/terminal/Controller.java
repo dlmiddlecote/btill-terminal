@@ -43,7 +43,7 @@ public class Controller {
             case SETTLE_BILL: {
                 SignedBill signedBill = deserializeSignedBill(content);
                 //System.out.println("Amount: " + amount.toString());
-                Future<Receipt> receiptFuture = till.settleBillUsing(signedBill);
+                /* Future<Receipt> receiptFuture = till.settleBillUsing(signedBill);
                 Receipt receipt = null;
                 try {
                     receipt = receiptFuture.get();
@@ -53,7 +53,8 @@ public class Controller {
                 } catch (ExecutionException e) {
                     System.err.println("\nReceipt retrieval exception interrupted!"); // TODO CHANGE TO LOGGING FORMAT
                     e.printStackTrace();
-                }
+                }*/
+                Receipt receipt = till.settleBillUsing(signedBill);
                 System.out.println("Created receipt");
                 return new BTMessageBuilder(OK, receipt).build();
             }
