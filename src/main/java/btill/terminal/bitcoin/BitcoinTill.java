@@ -4,9 +4,11 @@ import btill.terminal.*;
 import btill.terminal.values.*;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.bitcoinj.core.*;
 
+import java.net.InetAddress;
 import java.util.concurrent.*;
 
 import static java.lang.System.exit;
@@ -92,10 +94,13 @@ public class BitcoinTill implements Till {
             Transaction tx = new Transaction(walletKitThread.getWalletAppKit().params(),
                     signedBill.getPayment().getTransactions(0).toByteArray());
             getWallet().commitTx(tx);
+            System.out.println(tx.toString());
             System.out.println("Commited transaction");
             Futures.addCallback(walletKitThread.getWalletAppKit()
                             .peerGroup().broadcastTransaction(tx),
                     new FutureCallback<Transaction>() {
+
+
                         public void onSuccess(Transaction tx) {
                             System.out.println("Transaction succeeded"); // TODO CHANGE TO LOGGING FORMAT
 
@@ -132,14 +137,40 @@ public class BitcoinTill implements Till {
                 // TODO I have no idea if this will work - seems a little hacky!
 
                 while (receipt == null) {
-                    System.out.println("Waiting for receipt");
-                    Thread.sleep(1000);
+                    //System.out.println("Waiting for receipt");
+                    //Thread.sleep(1000);
                 }
                 System.out.println("Got receipt");
                 return receipt;
+                //return null;
             }
         });
     }
+
+    /*public Future<Receipt> settleBillUsing(SignedBill signedBill) {
+        return pool.submit(new Callable<Receipt>() {
+            @Override
+            public Receipt call() throws Exception {
+                System.out.println("Inside Settling Bill");
+                Transaction tx = new Transaction(walletKitThread.getWalletAppKit().params(),
+                        signedBill.getPayment().getTransactions(0).toByteArray());
+                getWallet().commitTx(tx);
+                //System.out.println(tx.toString());
+                System.out.println("Commited transaction");
+
+                System.out.println("Wallet Peers: " + walletKitThread.getWalletAppKit().peerGroup().getConnectedPeers().toString());
+                ListenableFuture<Transaction> futureTx = walletKitThread.getWalletAppKit().peerGroup().broadcastTransaction(tx);
+
+                System.out.println("Starting to wait");
+                while (!futureTx.isDone()){
+
+                }
+                System.out.println("Ended wait");
+                return new Receipt(signedBill.getPayment(), signedBill.getGbpAmount(), signedBill.getBtcAmount());
+            }
+        });
+
+    }*/
 
     @Override
     public GBP getGBP(Order order) {
