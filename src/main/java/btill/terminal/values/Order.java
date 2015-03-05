@@ -22,6 +22,10 @@ public class Order {
         return new GBP(runningTotal);
     }
 
+    public Menu getOrder() {
+        return order;
+    }
+
     public static void main(String[] args) {
         MenuItem item = new MenuItem("lager", new GBP(300), "drink");
         item.setQuantity(3);

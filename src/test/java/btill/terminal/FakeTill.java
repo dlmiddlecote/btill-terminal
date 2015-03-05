@@ -4,7 +4,7 @@ import btill.terminal.values.*;
 
 import java.util.concurrent.Future;
 
-public class FakeTill implements Till {
+/*public class FakeTill implements Till {
     @Override
     public Bill createBillForAmount(GBP amount) {
         return new Bill(amount);
@@ -25,4 +25,4 @@ public class FakeTill implements Till {
         return null;
     }
 
-}
+}*/

@@ -12,9 +12,10 @@ public class BillBuilder {
     private byte[] merchantData = null;
     private Coin amount = null;
     private Wallet wallet = null;
+    private GBP gbpAmount = null;
 
     Bill build() {
-        return new Bill(memo, paymentURL, merchantData, amount, wallet);
+        return new Bill(memo, paymentURL, merchantData, amount, gbpAmount, wallet);
     }
 
     BillBuilder setMemo(String memo) {
@@ -34,6 +35,11 @@ public class BillBuilder {
 
     BillBuilder setAmount(Coin amount) {
         this.amount = amount;
+        return this;
+    }
+
+    BillBuilder setGBPAmount(GBP amount) {
+        this.gbpAmount = amount;
         return this;
     }
 

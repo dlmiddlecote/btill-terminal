@@ -29,7 +29,7 @@ public class Controller {
             case MAKE_ORDER: {
                 Order order = new Order(deserializeMenu(content));
                 amount = order.total();
-                NewBill bill = new NewBill(amount);
+                Bill bill = till.createBillForAmount(amount);
 
 
 //                THIS DOES NOT WORK
@@ -54,6 +54,7 @@ public class Controller {
                     System.err.println("\nReceipt retrieval exception interrupted!"); // TODO CHANGE TO LOGGING FORMAT
                     e.printStackTrace();
                 }
+                System.out.println("Created receipt");
                 return new BTMessageBuilder(OK, receipt).build();
             }
             default: {

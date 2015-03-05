@@ -48,6 +48,7 @@ public class BitcoinTill implements Till {
         System.out.println("Amount: " + amount.toString() + ": Bitcoin: " + exchange.getSatoshis(amount).toString());
         billBuilder = new BillBuilder();
         billBuilder.setAmount(exchange.getSatoshis(amount));
+        billBuilder.setGBPAmount(amount);
         billBuilder.setMemo(memo);
         billBuilder.setPaymentURL(paymentURL);
         billBuilder.setMerchantData(merchantData);
@@ -87,9 +88,11 @@ public class BitcoinTill implements Till {
 
         // SEND TRANSACTION TO BLOCKCHAIN
         try {
+            System.out.println("Inside Settling Bill");
             Transaction tx = new Transaction(walletKitThread.getWalletAppKit().params(),
                     signedBill.getPayment().getTransactions(0).toByteArray());
             getWallet().commitTx(tx);
+            System.out.println("Commited transaction");
             Futures.addCallback(walletKitThread.getWalletAppKit()
                             .peerGroup().broadcastTransaction(tx),
                     new FutureCallback<Transaction>() {
@@ -98,7 +101,7 @@ public class BitcoinTill implements Till {
 
                             // CREATE RECEIPT
                             try {
-                                receipt = new Receipt(signedBill.getPayment());
+                                receipt = new Receipt(signedBill.getPayment(), signedBill.getGbpAmount(), signedBill.getBtcAmount());
                             } catch (InvalidProtocolBufferException e) {
                                 System.err.println("\nCould not extract payment!"); // TODO CHANGE TO LOGGING FORMAT
                                 e.printStackTrace();
@@ -127,8 +130,12 @@ public class BitcoinTill implements Till {
             @Override
             public Receipt call() throws Exception {
                 // TODO I have no idea if this will work - seems a little hacky!
-                while (receipt == null)
+
+                while (receipt == null) {
+                    System.out.println("Waiting for receipt");
                     Thread.sleep(1000);
+                }
+                System.out.println("Got receipt");
                 return receipt;
             }
         });
