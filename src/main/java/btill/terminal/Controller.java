@@ -30,30 +30,11 @@ public class Controller {
                 Order order = new Order(deserializeMenu(content));
                 amount = order.total();
                 Bill bill = till.createBillForAmount(amount);
-
-
-//                THIS DOES NOT WORK
-//                bill.setRequest(bill.getRequest("bitcoin:mhKuHFtbzF5khjNSDDbM8z6x18avzt4EgY?amount="
-//                                + till.getAmount(amount) + "&r=http://www.b-till.com&message=Payment%20for%20coffee"));
-
-
                 BTMessage message = new BTMessageBuilder(OK, bill).build();
                 return message;
             }
             case SETTLE_BILL: {
                 SignedBill signedBill = deserializeSignedBill(content);
-                //System.out.println("Amount: " + amount.toString());
-                /* Future<Receipt> receiptFuture = till.settleBillUsing(signedBill);
-                Receipt receipt = null;
-                try {
-                    receipt = receiptFuture.get();
-                } catch (InterruptedException e) {
-                    System.err.println("\nReceipt retrieval interrupted"); // TODO CHANGE TO LOGGING FORMAT
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    System.err.println("\nReceipt retrieval exception interrupted!"); // TODO CHANGE TO LOGGING FORMAT
-                    e.printStackTrace();
-                }*/
                 Receipt receipt = till.settleBillUsing(signedBill);
                 System.out.println("Created receipt");
                 return new BTMessageBuilder(OK, receipt).build();

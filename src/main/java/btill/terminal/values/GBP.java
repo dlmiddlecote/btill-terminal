@@ -2,8 +2,16 @@ package btill.terminal.values;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.bitcoinj.core.Coin;
 
+/**
+ * GBP is our representation of real, British money. The kind of money you can depend on, that has stood up to the
+ * Blitz and the Communists, to the bankers and the unchecked immigration. The kind of money you can sink your teeth
+ * into and be assured of good, old-fashioned, British germs, the kind of germs that apologise (with an 's', no less!)
+ * before ravaging your organs for the precious, colonial resources upon which the Empire was built. The money of
+ * Shakespeare, Churchill, the Beatles, Sean Connery, Harry Potter. David Beckham's right foot. David Beckham's left
+ * foot, come to that! Rule Britannia, Britannia rules the waves! Send her victorious, happy and glorious, long to reign
+ * over us, God save the GBP!
+ */
 public class GBP {
     private final int pence;
 

@@ -11,7 +11,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 public class TestController {
- /*   private MenuItem fakeItem = new MenuItem("fakeItem", new GBP(100), "category");
+    private MenuItem fakeItem = new MenuItem("fakeItem", new GBP(100), "category");
     private final Menu fakeMenu = new Menu(asList(new MenuItem("lager", new GBP(375), "drink")));
     private final Menu returnedOrder = new Menu(asList(new MenuItem("cider", new GBP(350), "drink")));
     private final Till fakeTill = new FakeTill();
@@ -48,7 +48,7 @@ public class TestController {
         fakeItem.setQuantity(3);
         final Menu fakeMenu2 = new Menu(asList(fakeItem));
         BTMessage message = controller.processRequest(Command.MAKE_ORDER, getBytes(fakeMenu2));
-        NewBill bill = new Gson().fromJson(message.getBodyString(), NewBill.class);
+        Bill bill = new Gson().fromJson(message.getBodyString(), Bill.class);
         assertThat(bill.toString(), is("Bill for £3.00"));
     }
 
@@ -59,8 +59,8 @@ public class TestController {
 //    }
 
 //
-    private NewBill deserialize(String body) {
-        return new Gson().fromJson(body, NewBill.class);
+    private Bill deserialize(String body) {
+        return new Gson().fromJson(body, Bill.class);
     }
 
     private byte[] getBytes(Object object) {
@@ -68,5 +68,5 @@ public class TestController {
         return json.getBytes();
     }
 
-*/
+
 }

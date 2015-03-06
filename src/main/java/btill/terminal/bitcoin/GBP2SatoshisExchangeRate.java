@@ -14,4 +14,8 @@ public class GBP2SatoshisExchangeRate {
         return Coin.valueOf((long) (amount.getPence() * rate));
     }
 
+    public GBP getGBP(Coin amount) {
+        return new GBP((int) (amount.getValue() / rate));
+    }
+
 }

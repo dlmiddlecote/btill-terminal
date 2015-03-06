@@ -1,53 +1,87 @@
 package btill.terminal.bitcoin;
 
-import btill.terminal.*;
-import btill.terminal.values.*;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
+import btill.terminal.Till;
+import btill.terminal.values.Bill;
+import btill.terminal.values.GBP;
+import btill.terminal.values.Receipt;
+import btill.terminal.values.SignedBill;
 import com.google.protobuf.InvalidProtocolBufferException;
-import org.bitcoinj.core.*;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import org.bitcoinj.core.Coin;
+import org.bitcoinj.core.Transaction;
+import org.bitcoinj.core.Wallet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.net.InetAddress;
-import java.util.concurrent.*;
-
-import static java.lang.System.exit;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
- * BitcoinTill currently builds a {@link btill.terminal.values.Bill} which contains a payment request pointing
- * to the Till's assigned {@link Wallet}.
+ * BitcoinTill deals with the financial transactions of the program.
+ * It runs a {@link btill.terminal.bitcoin.WalletKitThread}, builds a {@link btill.terminal.values.Bill} which
+ * contains a payment request pointing and settles a {@link btill.terminal.values.SignedBill} by pushing a transaction
+ * to the Bitcoin blockchain, returning a {@link btill.terminal.values.Receipt}.
  */
 
 public class BitcoinTill implements Till {
 
+    protected static final Logger Log = LoggerFactory.getLogger(BitcoinTill.class);
+    private static final double CONVERSION_RATE = penceExchangeRate();
     private final GBP2SatoshisExchangeRate exchange;
-
     private WalletKitThread walletKitThread = null;
     private String memo = "Thank you for your order!";
     private String paymentURL = "www.b-till.com";
     private byte[] merchantData = null;
-    private BillBuilder billBuilder;
-
-    private ExecutorService pool = Executors.newFixedThreadPool(10);
+    private BillBuilder billBuilder = null;
     private Receipt receipt = null;
 
-    public BitcoinTill(GBP2SatoshisExchangeRate exchange) {
-        this.exchange = exchange;
+    /**
+     * Constructs a BitcoinTill with the specified exchange rate, starting the associated {@link WalletKitThread}.
+     */
+    public BitcoinTill() {
+        this.exchange = new GBP2SatoshisExchangeRate(CONVERSION_RATE);
         this.setUpWalletThread();
         this.startWalletThread();
-        while (!this.walletKitThread.isRunning())
+        while (!this.walletKitThread.isRunning())   // BitcoinTill won't start up until wallet is running
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                System.err.println("\nWallet set-up interrupted!"); // TODO CHANGE TO LOGGING FORMAT
+                Log.error("\nWallet set-up interrupted!");
                 e.printStackTrace();
             }
 
     }
 
+    /**
+     * Sets the conversion rate between GBP pence and BTC satoshis using a web call.
+     */
+    private static double penceExchangeRate() {
+        String gbp = null;
+        try {
+            gbp = Unirest.get("https://community-bitcointy.p.mashape.com/price/GBP")
+                    .header("X-Mashape-Key", "lkv6KPZ302mshKYByfU1gD0iqSsqp1OV2l0jsnlc4oIyhtpR8p")
+                    .header("Accept", "text/plain")
+                    .asString().getBody();
+        } catch (UnirestException e) {
+            Log.info("Error");
+        }
+        if (gbp != null) {
+            Double pence = Double.parseDouble(gbp);
+            Log.info("Exchange rate: " + (100000000.0 / pence) + " satoshis / GBP");
+            return 1000000.0 / pence;
+        }
+        Log.info("Exchange rate: 0.0");
+        return 0.0;
+    }
+
+    /**
+     * Creates a {@link Bill} for the specified amount in {@link GBP}.
+     */
     public Bill createBillForAmount(GBP amount) {
-        // TODO CHANGE TO LOGGING FORMAT (OR DELETE!)
-        System.out.println("Amount: " + amount.toString() + ": Bitcoin: " + exchange.getSatoshis(amount).toString());
+
+        Log.info("Amount: " + amount.toString() + ": Bitcoin: " + exchange.getSatoshis(amount).toString());
+
         billBuilder = new BillBuilder();
         billBuilder.setAmount(exchange.getSatoshis(amount));
         billBuilder.setGBPAmount(amount);
@@ -55,162 +89,74 @@ public class BitcoinTill implements Till {
         billBuilder.setPaymentURL(paymentURL);
         billBuilder.setMerchantData(merchantData);
         billBuilder.setWallet(getWallet());
+
         return billBuilder.build();
     }
 
-    // Adam says: Never used, but might be used in a future where people actually use Bitcoin
+    /**
+     * Creates a {@link Bill} for the specified amount in {@link Coin}.
+     */
     public Bill createBillForAmount(Coin amount) {
+
         billBuilder = new BillBuilder();
         billBuilder.setAmount(amount);
+        billBuilder.setGBPAmount(exchange.getGBP(amount));
         billBuilder.setMemo(memo);
         billBuilder.setPaymentURL(paymentURL);
         billBuilder.setMerchantData(merchantData);
         billBuilder.setWallet(getWallet());
+
         return billBuilder.build();
     }
 
-    public String getAmount(GBP amount) {
-        return exchange.getSatoshis(amount).toPlainString();
-    }
-
-    public GBP getGBP(Menu menu) {
-        GBP totalCost = new GBP(0);
-
-        for (MenuItem item: menu) {
-            totalCost = totalCost.plus(item.getPrice().times(item.getQuantity()));
-            System.out.println("Item: " + item.getName() + "\n" + "Quantity: " + item.getQuantity() + "\n"); // TODO CHANGE TO LOGGING FORMAT?
-        }
-
-        return totalCost;
-    }
-
-    /*public Future<Receipt> settleBillUsing(SignedBill signedBill) {
-
-        receipt = null;
-
-        // SEND TRANSACTION TO BLOCKCHAIN
-        try {
-            System.out.println("Inside Settling Bill");
-            Transaction tx = new Transaction(walletKitThread.getWalletAppKit().params(),
-                    signedBill.getPayment().getTransactions(0).toByteArray());
-            getWallet().commitTx(tx);
-            System.out.println(tx.toString());
-            System.out.println("Commited transaction");
-            Futures.addCallback(walletKitThread.getWalletAppKit()
-                            .peerGroup().broadcastTransaction(tx),
-                    new FutureCallback<Transaction>() {
-
-
-                        public void onSuccess(Transaction tx) {
-                            System.out.println("Transaction succeeded"); // TODO CHANGE TO LOGGING FORMAT
-
-                            // CREATE RECEIPT
-                            try {
-                                receipt = new Receipt(signedBill.getPayment(), signedBill.getGbpAmount(), signedBill.getBtcAmount());
-                            } catch (InvalidProtocolBufferException e) {
-                                System.err.println("\nCould not extract payment!"); // TODO CHANGE TO LOGGING FORMAT
-                                e.printStackTrace();
-                                exit(1);
-                            }
-
-
-                        }
-
-                        public void onFailure(Throwable t) {
-                            receipt = null;
-                            System.out.println("Transaction failed"); // TODO CHANGE TO LOGGING FORMAT
-                        }
-                    });
-        } catch (VerificationException e) {
-            System.err.println("\nPayment Verification Failed!"); // TODO CHANGE TO LOGGING FORMAT
-            e.printStackTrace();
-            exit(1);
-        } catch (InvalidProtocolBufferException e) {
-            System.err.println("\nCould not extract payment!"); // TODO CHANGE TO LOGGING FORMAT
-            e.printStackTrace();
-            exit(1);
-        }
-
-        return pool.submit(new Callable<Receipt>() {
-            @Override
-            public Receipt call() throws Exception {
-                // TODO I have no idea if this will work - seems a little hacky!
-
-                while (receipt == null) {
-                    //System.out.println("Waiting for receipt");
-                    //Thread.sleep(1000);
-                }
-                System.out.println("Got receipt");
-                return receipt;
-                //return null;
-            }
-        });
-    }*/
-
+    /**
+     * Returns the {@link Receipt} from pushing the transaction in the {@link SignedBill} to the Bitcoin blockchain.
+     * Uses {@link java.util.concurrent.Future} to await the result of broadcasting the transaction, so will not return
+     * immediately.
+     * Make sure not to block I/O by calling this method!
+     */
     public Receipt settleBillUsing(SignedBill signedBill) {
 
-
-        System.out.println("\nReceived Bill");
+        Log.info("\nReceived Bill");
         Transaction tx = null;
+
         try {
+            // extract the transaction from the SignedBill - assumes only one transaction!
             tx = new Transaction(walletKitThread.getWalletAppKit().params(),
                     signedBill.getPayment().getTransactions(0).toByteArray());
         } catch (InvalidProtocolBufferException e) {
+            Log.error("Failed to get transaction from Payment!");
             e.printStackTrace();
         }
-        getWallet().commitTx(tx);
-        System.out.println("\nCommitted Transaction");
 
+        // commits transaction to the blockchain
+        getWallet().commitTx(tx);
+        Log.info("\nCommitted Transaction");
+
+        // awaits confirmation of broadcast to blockchain
         Future<Transaction> transactionFuture = walletKitThread.getWalletAppKit().peerGroup().broadcastTransaction(tx);
-        System.out.println("\nBroadcast Transaction");
+        Log.info("\nBroadcast Transaction");
         Transaction txReturn = null;
         try {
             txReturn = transactionFuture.get();
-            System.out.println("\nTransaction Broadcast Returned!");
+            Log.info("\nTransaction Broadcast Returned!");
 
             try {
+                // build receipt for signedBill
                 receipt = new Receipt(signedBill.getPayment(), signedBill.getGbpAmount(), signedBill.getBtcAmount());
             } catch (InvalidProtocolBufferException e) {
+                Log.error("Failed to get transaction from Payment!");
                 e.printStackTrace();
             }
         } catch (InterruptedException e) {
-            System.err.println("\nReceipt retrieval interrupted"); // TODO CHANGE TO LOGGING FORMAT
+            Log.error("\nReceipt retrieval interrupted");
             e.printStackTrace();
         } catch (ExecutionException e) {
-            System.err.println("\nReceipt retrieval exception interrupted!"); // TODO CHANGE TO LOGGING FORMAT
+            Log.error("\nReceipt retrieval execution interrupted!");
             e.printStackTrace();
         }
+
         return receipt;
-    }
-
-    /*public Future<Receipt> settleBillUsing(SignedBill signedBill) {
-        return pool.submit(new Callable<Receipt>() {
-            @Override
-            public Receipt call() throws Exception {
-                System.out.println("Inside Settling Bill");
-                Transaction tx = new Transaction(walletKitThread.getWalletAppKit().params(),
-                        signedBill.getPayment().getTransactions(0).toByteArray());
-                getWallet().commitTx(tx);
-                //System.out.println(tx.toString());
-                System.out.println("Commited transaction");
-
-                System.out.println("Wallet Peers: " + walletKitThread.getWalletAppKit().peerGroup().getConnectedPeers().toString());
-                ListenableFuture<Transaction> futureTx = walletKitThread.getWalletAppKit().peerGroup().broadcastTransaction(tx);
-
-                System.out.println("Starting to wait");
-                while (!futureTx.isDone()){
-
-                }
-                System.out.println("Ended wait");
-                return new Receipt(signedBill.getPayment(), signedBill.getGbpAmount(), signedBill.getBtcAmount());
-            }
-        });
-
-    }*/
-
-    @Override
-    public GBP getGBP(Order order) {
-        return null;
     }
 
     /**
@@ -237,15 +183,24 @@ public class BitcoinTill implements Till {
         this.merchantData = merchantData;
     }
 
-    public void setUpWalletThread(){
-        walletKitThread = new WalletKitThread(/*new File("tillWallet"),*/"till");
+    /**
+     * Sets up the {@link btill.terminal.bitcoin.WalletKitThread}.
+     */
+    public void setUpWalletThread() {
+        walletKitThread = new WalletKitThread("till");
     }
 
-    public void startWalletThread(){
+    /**
+     * Starts the {@link btill.terminal.bitcoin.WalletKitThread}.
+     */
+    public void startWalletThread() {
         walletKitThread.start();
     }
 
-    public Wallet getWallet(){
+    /**
+     * Returns the {@link org.bitcoinj.core.Wallet} wrapped inside the {@link btill.terminal.bitcoin.WalletKitThread}.
+     */
+    public Wallet getWallet() {
         return walletKitThread.getWalletAppKit().wallet();
     }
 }

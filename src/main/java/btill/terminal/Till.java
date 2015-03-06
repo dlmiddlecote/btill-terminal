@@ -8,6 +8,4 @@ import java.util.concurrent.Future;
 public interface Till {
     Bill createBillForAmount(GBP amount);
     Receipt settleBillUsing(SignedBill signedBill);
-    GBP getGBP(Order order);
-    String getAmount(GBP amount);
 }

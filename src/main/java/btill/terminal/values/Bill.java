@@ -14,17 +14,21 @@ import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.protocols.payments.PaymentProtocol;
 import org.bitcoinj.protocols.payments.PaymentProtocolException;
 import org.bitcoinj.protocols.payments.PaymentSession;
-import org.bitcoinj.uri.BitcoinURI;
-import org.bitcoinj.uri.BitcoinURIParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Bill acts as a wrapper class for a {@link org.bitcoin.protocols.payments.Protos.PaymentRequest}. It is constructed
+ * by the {@link btill.terminal.bitcoin.BitcoinTill} to the Phone in response to an {@link Order}.
+ */
 public class Bill implements Serializable {
 
+    protected static final Logger Log = LoggerFactory.getLogger(Bill.class);
     private static final long serialVersionUID = 8676831317792422678L;
 
     // TRANSIENT VARIABLES - NOT TRANSMITTED TO PHONE OR BACK
@@ -102,7 +106,7 @@ public class Bill implements Serializable {
             try {
                 paymentRequest = PaymentRequest.parseFrom(request);
             } catch (InvalidProtocolBufferException e) {
-                System.err.println("Could not rebuild Payment Request!"); // TODO CHANGE TO LOGGING FORMAT
+                Log.error("Could not rebuild Payment Request!");
                 e.printStackTrace();
             }
 
@@ -111,8 +115,6 @@ public class Bill implements Serializable {
             // functions
             PaymentSession session = new PaymentSession(paymentRequest, false);
 
-            wallet.completeTx(session.getSendRequest());
-
             Wallet.SendRequest sendRequest = session.getSendRequest();
 
             sendRequest.ensureMinRequiredFee = false;
@@ -120,15 +122,15 @@ public class Bill implements Serializable {
             sendRequest.feePerKb = Coin.ZERO;
             sendRequest.signInputs = false;
 
-            System.out.println(sendRequest.tx.toString());
+            Log.info(sendRequest.tx.toString());
 
             wallet.completeTx(sendRequest);
 
-            System.out.println("COMPLETED: "+sendRequest.tx);
+            Log.info("COMPLETED: " + sendRequest.tx);
 
             wallet.signTransaction(sendRequest);
 
-            System.out.println("SIGNED: "+sendRequest.tx);
+            Log.info("SIGNED: " + sendRequest.tx);
 
             List<Transaction> txil = new ArrayList<Transaction>();
 
@@ -137,10 +139,10 @@ public class Bill implements Serializable {
             payment = session.getPayment(txil,wallet.currentReceiveAddress(),session.getMemo());
 
         } catch (PaymentProtocolException e) {
-            System.err.println("Payment Protocol Exception!"); // TODO CHANGE TO LOGGING FORMAT
+            Log.error("Payment Protocol Exception!");
             e.printStackTrace();
         } catch (InsufficientMoneyException e) {
-            System.err.println("Insufficient money to pay!");  // TODO CHANGE TO LOGGING FORMAT
+            Log.error("Insufficient money to pay!");
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
