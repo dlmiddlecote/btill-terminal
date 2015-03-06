@@ -156,6 +156,9 @@ public class BitcoinTill implements Till {
             e.printStackTrace();
         }
 
+        Log.info(getWallet().toString(false,false,false,null));
+        Log.info(getWallet().getPendingTransactions().toString());
+
         return receipt;
     }
 
