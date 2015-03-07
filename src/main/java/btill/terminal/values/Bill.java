@@ -36,7 +36,6 @@ public class Bill implements Serializable {
     private transient String memo = null;
     private transient String paymentURL = null;
     private transient byte[] merchantData = null;
-
     private transient Wallet wallet = null;
     private transient PaymentRequest paymentRequest = null;
 
@@ -68,6 +67,22 @@ public class Bill implements Serializable {
         this.gbpAmount = gbpAmount;
         this.wallet = wallet;
         buildPaymentRequest();
+    }
+
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public String getPaymentURL() {
+        return paymentURL;
+    }
+
+    public byte[] getMerchantData() {
+        return merchantData;
     }
 
     public GBP getGbpAmount() {
