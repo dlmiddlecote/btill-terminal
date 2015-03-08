@@ -14,6 +14,7 @@ import org.bitcoinj.core.Wallet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -24,12 +25,14 @@ import java.util.concurrent.Future;
  * to the Bitcoin blockchain, returning a {@link btill.terminal.values.Receipt}.
  */
 
-public class BitcoinTill implements Till {
+public class BitcoinTill implements Till, WalletKitThreadInterface {
 
     protected static final Logger Log = LoggerFactory.getLogger(BitcoinTill.class);
     private static final double CONVERSION_RATE = penceExchangeRate();
     private final GBP2SatoshisExchangeRate exchange;
     private WalletKitThread walletKitThread = null;
+    private String walletKitThreadFilePrefix = null;
+    private String walletKitThreadFolder = null;
     private String memo = "Thank you for your order!";
     private String paymentURL = "www.b-till.com";
     private byte[] merchantData = null;
@@ -39,8 +42,12 @@ public class BitcoinTill implements Till {
     /**
      * Constructs a BitcoinTill with the specified exchange rate, starting the associated {@link WalletKitThread}.
      */
-    public BitcoinTill() {
+    public BitcoinTill(@Nullable String walletKitThreadFolder, @Nullable String walletKitThreadFilePrefix) {
         this.exchange = new GBP2SatoshisExchangeRate(CONVERSION_RATE);
+        if (walletKitThreadFolder != null)
+            this.walletKitThreadFolder = walletKitThreadFolder;
+        if (walletKitThreadFilePrefix != null)
+            this.walletKitThreadFilePrefix = walletKitThreadFilePrefix;
         this.setUpWalletThread();
         this.startWalletThread();
         while (!this.walletKitThread.isRunning())   // BitcoinTill won't start up until wallet is running
@@ -75,6 +82,22 @@ public class BitcoinTill implements Till {
         return 0.0;
     }
 
+    public static double getConversionRate() {
+        return CONVERSION_RATE;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public String getPaymentURL() {
+        return paymentURL;
+    }
+
+    public byte[] getMerchantData() {
+        return merchantData;
+    }
+
     /**
      * Creates a {@link Bill} for the specified amount in {@link GBP}.
      */
@@ -86,6 +109,25 @@ public class BitcoinTill implements Till {
         billBuilder.setAmount(exchange.getSatoshis(amount));
         billBuilder.setGBPAmount(amount);
         billBuilder.setMemo(memo);
+        billBuilder.setPaymentURL(paymentURL);
+        billBuilder.setMerchantData(merchantData);
+        billBuilder.setWallet(getWallet());
+
+        return billBuilder.build();
+    }
+
+    /**
+     * Creates a {@link Bill} for the specified amount in {@link GBP}.
+     */
+    public Bill createBillForAmount(GBP amount, String order) {
+
+        Log.info("Amount: " + amount.toString() + ": Bitcoin: " + exchange.getSatoshis(amount).toString());
+
+        billBuilder = new BillBuilder();
+        billBuilder.setAmount(exchange.getSatoshis(amount));
+        billBuilder.setGBPAmount(amount);
+        memo = order;
+        billBuilder.setMemo(order);
         billBuilder.setPaymentURL(paymentURL);
         billBuilder.setMerchantData(merchantData);
         billBuilder.setWallet(getWallet());
@@ -190,7 +232,7 @@ public class BitcoinTill implements Till {
      * Sets up the {@link btill.terminal.bitcoin.WalletKitThread}.
      */
     public void setUpWalletThread() {
-        walletKitThread = new WalletKitThread("till");
+        walletKitThread = new WalletKitThread(walletKitThreadFolder, walletKitThreadFilePrefix);
     }
 
     /**
@@ -198,6 +240,17 @@ public class BitcoinTill implements Till {
      */
     public void startWalletThread() {
         walletKitThread.start();
+    }
+
+    /**
+     * Stops the {@link btill.terminal.bitcoin.WalletKitThread}.
+     */
+    public void stopWalletThread() {
+        walletKitThread.terminate();
+    }
+
+    public Boolean isRunning(){
+        return walletKitThread.isRunning();
     }
 
     /**

@@ -21,8 +21,11 @@ public class WalletKitThread extends Thread {
     private Boolean _setupComplete = false;
     private Boolean _isRunning = false;
     private String _filePrefix = "test_btc";
+    private String _folder = "./bitcoin_files";
 
-    public WalletKitThread(@Nullable String filePrefix) {
+    public WalletKitThread(@Nullable String folder, @Nullable String filePrefix) {
+        if (folder != null)
+            _folder = folder;
         if (filePrefix != null)
             _filePrefix = filePrefix;
     }
@@ -44,7 +47,7 @@ public class WalletKitThread extends Thread {
 
         Log.debug("WalletKitThread has started");
 
-        _walletAppKit = new WalletAppKit(_netParams, new File("./bitcoin_files/"), _filePrefix) {
+        _walletAppKit = new WalletAppKit(_netParams, new File(_folder), _filePrefix) {
             @Override
             protected void onSetupCompleted() {
 
@@ -54,6 +57,7 @@ public class WalletKitThread extends Thread {
                 _walletAppKit.peerGroup().setBloomFilterFalsePositiveRate(0.00000000000000001);
                 //_walletAppKit.peerGroup().setMaxConnections(11);
                 _walletAppKit.peerGroup().setFastCatchupTimeSecs(_walletAppKit.wallet().getEarliestKeyCreationTime());
+                _walletAppKit.setAutoStop(false);
                 Log.info(_walletAppKit.wallet().toString(false, false, false, null));
                 Log.info(_walletAppKit.wallet().getRecentTransactions(3,true).toString());
                 //System.out.println(peerGroup().getConnectedPeers().toString());
@@ -70,6 +74,19 @@ public class WalletKitThread extends Thread {
         Log.info(_filePrefix + ": Wallet App Running");
 
         _isRunning = true;
+    }
+
+    public void terminate() {
+        _walletAppKit.stopAsync();
+        _walletAppKit.awaitTerminated();
+        Log.info(_filePrefix + ": Wallet App Terminated");
+        try {
+            join(1000);
+        } catch (InterruptedException e) {
+            Log.error(_filePrefix + ": Wallet App Termination Failure");
+            e.printStackTrace();
+        }
+        _isRunning = false;
     }
 
 }

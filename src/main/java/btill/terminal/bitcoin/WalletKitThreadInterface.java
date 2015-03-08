@@ -7,5 +7,9 @@ public interface WalletKitThreadInterface {
 
     public void startWalletThread();
 
+    public void stopWalletThread();
+
+    public Boolean isRunning();
+
     public Wallet getWallet();
 }

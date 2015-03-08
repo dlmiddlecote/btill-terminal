@@ -16,9 +16,10 @@ public class BillBuilder {
     private Coin amount = null;
     private GBP gbpAmount = null;
     private Wallet wallet = null;
+    private Boolean freshAddress = true;
 
     public Bill build() {
-        return new Bill(memo, paymentURL, merchantData, amount, gbpAmount, wallet);
+        return new Bill(memo, paymentURL, merchantData, amount, gbpAmount, wallet, freshAddress);
     }
 
     public BillBuilder setMemo(String memo) {
@@ -48,6 +49,11 @@ public class BillBuilder {
 
     public BillBuilder setWallet(Wallet wallet) {
         this.wallet = wallet;
+        return this;
+    }
+
+    public BillBuilder setFreshAddress(Boolean freshAddress) {
+        this.freshAddress = freshAddress;
         return this;
     }
 

@@ -1,12 +1,9 @@
 package btill.terminal;
 
 import btill.terminal.bitcoin.BitcoinTill;
-import btill.terminal.bitcoin.GBP2SatoshisExchangeRate;
 import btill.terminal.values.GBP;
 import btill.terminal.values.Menu;
 import btill.terminal.values.MenuItem;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 
 import javax.bluetooth.UUID;
 
@@ -33,7 +30,7 @@ public class BtillTerminal implements AutoCloseable {
     }
 
     private static Till createTill() {
-        return new BitcoinTill();
+        return new BitcoinTill(null, "till");
     }
 
     private Menu createMenu() {

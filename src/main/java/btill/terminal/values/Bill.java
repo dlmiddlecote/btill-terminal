@@ -59,14 +59,14 @@ public class Bill implements Serializable {
     }
 
     public Bill(String memo, String paymentURL, byte[] merchantData,
-                Coin amount, GBP gbpAmount, Wallet wallet) {
+                Coin amount, GBP gbpAmount, Wallet wallet, Boolean freshAddress) {
         this.memo = memo;
         this.paymentURL = paymentURL;
         this.merchantData = merchantData;
         this.coinAmount = amount;
         this.gbpAmount = gbpAmount;
         this.wallet = wallet;
-        buildPaymentRequest();
+        buildPaymentRequest(freshAddress);
     }
 
     public Wallet getWallet() {
@@ -102,10 +102,18 @@ public class Bill implements Serializable {
         }
     }
 
-    public void buildPaymentRequest() {
-        Builder requestBuilder = PaymentProtocol.createPaymentRequest(net3Params,
-                coinAmount, wallet.freshReceiveAddress(), memo, paymentURL,
-                merchantData);
+    public void buildPaymentRequest(Boolean freshAddress) {
+        Builder requestBuilder;
+
+        if (freshAddress)
+            requestBuilder = PaymentProtocol.createPaymentRequest(net3Params,
+                                coinAmount, wallet.freshReceiveAddress(), memo, paymentURL,
+                                merchantData);
+        else
+            requestBuilder = PaymentProtocol.createPaymentRequest(net3Params,
+                    coinAmount, wallet.currentReceiveAddress(), memo, paymentURL,
+                    merchantData);
+
         paymentRequest = requestBuilder.build();
         request = paymentRequest.toByteArray();
     }
