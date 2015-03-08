@@ -181,7 +181,7 @@ public class TestBitcoinTill {
 
             testPayment = testPaymentSession.getPayment(txil, test.getWallet().currentReceiveAddress(), testPaymentSession.getMemo());
 
-            SignedBill testSignedBill = new SignedBill(testPayment,testGBPAmount, testAmount);
+            SignedBill testSignedBill = new SignedBill(testPayment, testGBPAmount, testAmount);
 
             testReceipt = test.settleBillUsing(testSignedBill);
 
@@ -201,7 +201,7 @@ public class TestBitcoinTill {
 
         assertThat(testReceipt, notNullValue());
         assertThat(testReceipt.getBitcoins(), equalTo(testAmount));
-        assertThat(testReceipt.getPaymentACK().getMemo(), equalTo(String.format("TRANSACTION SUCCEEDED:\n"+testMemo)));
+        assertThat(testReceipt.getPaymentACK().getMemo(), equalTo(String.format("TRANSACTION SUCCEEDED:\n" + testMemo)));
         assertThat(testReceipt.getPaymentACK().getPayment(), equalTo(testPayment));
 
     }

@@ -32,7 +32,8 @@ public class TestWalletKitThread {
         assertTrue(test.setupComplete());
         assertTrue(test.isRunning());
         try {
-            test.terminate();
+            while (test.isRunning())
+                test.terminate();
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
@@ -43,7 +44,8 @@ public class TestWalletKitThread {
         WalletKitThread test = new WalletKitThread("./bitcoin_test_files", "testWalletKitThreadStops");
         test.run();
         try {
-            test.terminate();
+            while (test.isRunning())
+                test.terminate();
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }

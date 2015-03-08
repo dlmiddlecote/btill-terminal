@@ -48,7 +48,7 @@ public class TestBill {
 
     @Test
     public void billToString() {
-        Bill test = new Bill(testMemo,testPaymentURL,testMerchantData,testAmount,testGbpAmount,testWallet,false);
+        Bill test = new Bill(testMemo, testPaymentURL, testMerchantData, testAmount, testGbpAmount, testWallet, false);
         assertThat(test.toString(), equalTo("Bill for " + test.getCoinAmount().toFriendlyString()));
     }
 
@@ -147,7 +147,8 @@ public class TestBill {
         SignedBill testSignedBill = test.pay();
 
         try {
-            testWalletKitThread.terminate();
+            while (testWalletKitThread.isRunning())
+                testWalletKitThread.terminate();
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }

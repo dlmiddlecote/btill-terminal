@@ -236,7 +236,8 @@ public class BitcoinTill implements Till, WalletKitThreadInterface {
      * Stops the {@link btill.terminal.bitcoin.WalletKitThread}.
      */
     public void stopWalletThread() {
-        walletKitThread.terminate();
+        while (walletKitThread.isRunning())
+            walletKitThread.terminate();
     }
 
     public Boolean isRunning(){

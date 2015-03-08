@@ -108,8 +108,8 @@ public class TestSignedBill {
         assertThat(test.getPayment(), equalTo(testPayment));
     }
 
-    public void signedBillHelper()throws InsufficientMoneyException, IOException, PaymentProtocolException {
-        Bill testBill = new Bill(testMemo,testPaymentURL,testMerchantData,testAmount,testGbpAmount,testWalletKitThread.getWalletAppKit().wallet(),false);
+    public void signedBillHelper() throws InsufficientMoneyException, IOException, PaymentProtocolException {
+        Bill testBill = new Bill(testMemo, testPaymentURL, testMerchantData, testAmount, testGbpAmount, testWalletKitThread.getWalletAppKit().wallet(), false);
 
         PaymentSession testPaymentSession = new PaymentSession(testBill.getRequest(), false);
 
