@@ -45,7 +45,10 @@ public class Bill implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Bill for " + coinAmount.toFriendlyString());
+        if (coinAmount != null)
+            return String.format("Bill for " + coinAmount.toFriendlyString());
+        else
+            return String.format("Bill for ???");
     }
 
     @Override
@@ -102,6 +105,11 @@ public class Bill implements Serializable {
         }
     }
 
+
+    public PaymentRequest getPaymentRequest() {
+        return paymentRequest;
+    }
+
     public void buildPaymentRequest(Boolean freshAddress) {
         Builder requestBuilder;
 
@@ -111,8 +119,8 @@ public class Bill implements Serializable {
                                 merchantData);
         else
             requestBuilder = PaymentProtocol.createPaymentRequest(net3Params,
-                    coinAmount, wallet.currentReceiveAddress(), memo, paymentURL,
-                    merchantData);
+                                coinAmount, wallet.currentReceiveAddress(), memo, paymentURL,
+                                merchantData);
 
         paymentRequest = requestBuilder.build();
         request = paymentRequest.toByteArray();
@@ -121,7 +129,7 @@ public class Bill implements Serializable {
     /**
      * Pay this Bill using the {@link Wallet}
      */
-    public SignedBill pay() {
+    public SignedBill pay() throws InsufficientMoneyException {
 
         Protos.Payment payment = null;
 
@@ -167,11 +175,15 @@ public class Bill implements Serializable {
         } catch (InsufficientMoneyException e) {
             Log.error("Insufficient money to pay!");
             e.printStackTrace();
+            throw e;
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return new SignedBill(payment, gbpAmount, coinAmount);
+        if (payment != null)
+            return new SignedBill(payment, gbpAmount, coinAmount);
+        else
+            return null;
     }
 
 }

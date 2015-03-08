@@ -5,7 +5,6 @@ import btill.terminal.values.Bill;
 import btill.terminal.values.GBP;
 import btill.terminal.values.Receipt;
 import btill.terminal.values.SignedBill;
-import com.google.protobuf.InvalidProtocolBufferException;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.bitcoinj.core.Coin;
@@ -162,14 +161,9 @@ public class BitcoinTill implements Till, WalletKitThreadInterface {
         Log.info("\nReceived Bill");
         Transaction tx = null;
 
-        try {
-            // extract the transaction from the SignedBill - assumes only one transaction!
-            tx = new Transaction(walletKitThread.getWalletAppKit().params(),
-                    signedBill.getPayment().getTransactions(0).toByteArray());
-        } catch (InvalidProtocolBufferException e) {
-            Log.error("Failed to get transaction from Payment!");
-            e.printStackTrace();
-        }
+        // extract the transaction from the SignedBill - assumes only one transaction!
+        tx = new Transaction(walletKitThread.getWalletAppKit().params(),
+                signedBill.getPayment().getTransactions(0).toByteArray());
 
         // commits transaction to the blockchain
         getWallet().commitTx(tx);
@@ -183,13 +177,9 @@ public class BitcoinTill implements Till, WalletKitThreadInterface {
             txReturn = transactionFuture.get();
             Log.info("\nTransaction Broadcast Returned!");
 
-            try {
-                // build receipt for signedBill
-                receipt = new Receipt(signedBill.getPayment(), signedBill.getGbpAmount(), signedBill.getBtcAmount());
-            } catch (InvalidProtocolBufferException e) {
-                Log.error("Failed to get transaction from Payment!");
-                e.printStackTrace();
-            }
+            // build receipt for signedBill
+            receipt = new Receipt(signedBill.getPayment(), signedBill.getGbpAmount(), signedBill.getBtcAmount());
+
         } catch (InterruptedException e) {
             Log.error("\nReceipt retrieval interrupted");
             e.printStackTrace();

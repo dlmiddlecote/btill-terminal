@@ -5,6 +5,7 @@ import btill.terminal.values.Bill;
 import btill.terminal.values.GBP;
 import btill.terminal.values.Receipt;
 import btill.terminal.values.SignedBill;
+import org.bitcoin.protocols.payments.Protos;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.core.Transaction;
@@ -34,10 +35,10 @@ public class TestBitcoinTill {
     private GBP testGBPAmount = new GBP(29);
     private String testMemo = "testMemo";
     private String testPaymentURL = "testPaymentURL";
-    private byte[] testMerchantData = new String("testMerchantData").getBytes();
+    private byte[] testMerchantData = String.format("testMerchantData").getBytes();
 
     @Test
-    public void AAAConstructor() {
+    public void tillAAAConstructor() {
         BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testConstructor");
         assertThat(test, notNullValue());
         assertTrue(test.isRunning());
@@ -156,8 +157,12 @@ public class TestBitcoinTill {
     @Test
     public void tillSettleBill() {
         Receipt testReceipt = null;
+        Protos.Payment testPayment = null;
 
         BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testSettleBillUsing");
+        test.setMemo(testMemo);
+        test.setMerchantData(testMerchantData);
+        test.setPaymentURL(testPaymentURL);
         Bill testBill = test.createBillForAmount(testAmount);
         try {
             PaymentSession testPaymentSession = new PaymentSession(testBill.getRequest(), false);
@@ -174,7 +179,9 @@ public class TestBitcoinTill {
             List<Transaction> txil = new ArrayList<Transaction>();
             txil.add(testSendRequest.tx);
 
-            SignedBill testSignedBill = new SignedBill(testPaymentSession.getPayment(txil, test.getWallet().currentReceiveAddress(), testPaymentSession.getMemo()), null, null);
+            testPayment = testPaymentSession.getPayment(txil, test.getWallet().currentReceiveAddress(), testPaymentSession.getMemo());
+
+            SignedBill testSignedBill = new SignedBill(testPayment,testGBPAmount, testAmount);
 
             testReceipt = test.settleBillUsing(testSignedBill);
 
@@ -186,16 +193,21 @@ public class TestBitcoinTill {
             e.printStackTrace();
         }
 
-        assertThat(testReceipt, notNullValue());
         try {
             test.stopWalletThread();
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
+
+        assertThat(testReceipt, notNullValue());
+        assertThat(testReceipt.getBitcoins(), equalTo(testAmount));
+        assertThat(testReceipt.getPaymentACK().getMemo(), equalTo(String.format("TRANSACTION SUCCEEDED:\n"+testMemo)));
+        assertThat(testReceipt.getPaymentACK().getPayment(), equalTo(testPayment));
+
     }
 
     @Test
-    public void ZZZNotReallyATestDeleteTmpFiles() {
+    public void tillZZZNotReallyATestDeleteTmpFiles() {
         final File dir = new File("./bitcoin_test_files");
         final String[] allFiles = dir.list();
         for (final String file : allFiles) {

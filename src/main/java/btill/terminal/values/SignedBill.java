@@ -25,8 +25,14 @@ public class SignedBill {
         return serialisedPayment;
     }
 
-    public Protos.Payment getPayment() throws InvalidProtocolBufferException {
-        return Protos.Payment.parseFrom(serialisedPayment);
+    public Protos.Payment getPayment() {
+        try {
+            return Protos.Payment.parseFrom(serialisedPayment);
+        } catch (InvalidProtocolBufferException e){
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     public GBP getGbpAmount() {

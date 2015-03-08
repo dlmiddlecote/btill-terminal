@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 public class TestWalletKitThread {
 
     @Test
-    public void AAAConstructor() {
+    public void kitAAAConstructor() {
         WalletKitThread test = new WalletKitThread("./bitcoin_test_files", "testWalletKitThreadConstructor");
         assertThat(test, notNullValue());
         assertTrue(!test.setupComplete());
@@ -26,7 +26,7 @@ public class TestWalletKitThread {
     }
 
     @Test
-    public void WalletStarts() {
+    public void kitWalletStarts() {
         WalletKitThread test = new WalletKitThread("./bitcoin_test_files", "testWalletKitThreadRuns");
         test.run();
         assertTrue(test.setupComplete());
@@ -39,7 +39,7 @@ public class TestWalletKitThread {
     }
 
     @Test
-    public void WalletStops() {
+    public void kitWalletStops() {
         WalletKitThread test = new WalletKitThread("./bitcoin_test_files", "testWalletKitThreadStops");
         test.run();
         try {
@@ -51,7 +51,7 @@ public class TestWalletKitThread {
     }
 
     @Test
-    public void ZZZNotReallyATestDeleteTmpFiles() {
+    public void kitZZZNotReallyATestDeleteTmpFiles() {
         final File dir = new File("./bitcoin_test_files");
         final String[] allFiles = dir.list();
         for (final String file : allFiles) {

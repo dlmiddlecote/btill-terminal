@@ -7,7 +7,9 @@ import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Wallet;
 import org.bitcoinj.params.TestNet3Params;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -15,29 +17,30 @@ import static org.junit.Assert.assertThat;
 /**
  * Created by Adam Kent on 07/03/2015.
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestBillBuilder {
 
     private Wallet testWallet = new Wallet(TestNet3Params.get());
     private String testMemo = "testMemo";
     private String testPaymentURL = "testPaymentURL";
-    private byte[] testMerchantData = new String("testMerchantData").getBytes();
+    private byte[] testMerchantData = String.format("testMerchantData").getBytes();
     private Coin testAmount = Coin.valueOf(17);
     private GBP testGbpAmount = new GBP(23);
 
     @Test
-    public void Constructor() {
+    public void builderAAAConstructor() {
         BillBuilder test = new BillBuilder();
         assertThat(test, notNullValue());
     }
 
     @Test(expected = NullPointerException.class)
-    public void BuilderAllNull() {
+    public void builderAAABuildAllNull() {
         BillBuilder test = new BillBuilder();
-        assertThat(test.build(), is(new Bill(null, null, null, null, null, null, true)));
+        test.build();
     }
 
     @Test
-    public void BuilderSetWallet() {
+    public void builderSetWallet() {
         BillBuilder test = new BillBuilder();
         test.setWallet(testWallet);
         Bill testBill = test.build();
@@ -46,7 +49,7 @@ public class TestBillBuilder {
     }
 
     @Test
-    public void BuilderSetMemo() {
+    public void builderSetMemo() {
         BillBuilder test = new BillBuilder();
         test.setWallet(testWallet);
         test.setMemo(testMemo);
@@ -56,7 +59,7 @@ public class TestBillBuilder {
     }
 
     @Test
-    public void BuilderSetPaymentURL() {
+    public void builderSetPaymentURL() {
         BillBuilder test = new BillBuilder();
         test.setWallet(testWallet);
         test.setPaymentURL(testPaymentURL);
@@ -66,7 +69,7 @@ public class TestBillBuilder {
     }
 
     @Test
-    public void BuilderSetMerchantData() {
+    public void builderSetMerchantData() {
         BillBuilder test = new BillBuilder();
         test.setWallet(testWallet);
         test.setMerchantData(testMerchantData);
@@ -76,7 +79,7 @@ public class TestBillBuilder {
     }
 
     @Test
-    public void BuilderSetCoinAmount() {
+    public void builderSetCoinAmount() {
         BillBuilder test = new BillBuilder();
         test.setWallet(testWallet);
         test.setAmount(testAmount);
@@ -86,7 +89,7 @@ public class TestBillBuilder {
     }
 
     @Test
-    public void BuilderSetGBPAmount() {
+    public void builderSetGBPAmount() {
         BillBuilder test = new BillBuilder();
         test.setWallet(testWallet);
         test.setGBPAmount(testGbpAmount);
@@ -97,7 +100,7 @@ public class TestBillBuilder {
 
     // TODO not working, weirdly. Assertion hits before fresh address does...
     @Test
-    public void BuilderSetFreshAddressTrue() {
+    public void builderSetFreshAddressTrue() {
         BillBuilder test = new BillBuilder();
         test.setFreshAddress(true);
         test.setWallet(testWallet);
@@ -107,7 +110,7 @@ public class TestBillBuilder {
     }
 
     @Test
-    public void BuilderSetFreshAddressFalse() {
+    public void builderSetFreshAddressFalse() {
         BillBuilder test = new BillBuilder();
         test.setFreshAddress(false);
         test.setWallet(testWallet);
