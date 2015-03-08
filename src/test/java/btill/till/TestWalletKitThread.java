@@ -19,7 +19,7 @@ public class TestWalletKitThread {
 
     @Test
     public void AAAConstructor() {
-        WalletKitThread test = new WalletKitThread("./bitcoin_test_files","testWalletKitThreadConstructor");
+        WalletKitThread test = new WalletKitThread("./bitcoin_test_files", "testWalletKitThreadConstructor");
         assertThat(test, notNullValue());
         assertTrue(!test.setupComplete());
         assertTrue(!test.isRunning());
@@ -27,31 +27,31 @@ public class TestWalletKitThread {
 
     @Test
     public void WalletStarts() {
-        WalletKitThread test = new WalletKitThread("./bitcoin_test_files","testWalletKitThreadRuns");
+        WalletKitThread test = new WalletKitThread("./bitcoin_test_files", "testWalletKitThreadRuns");
         test.run();
         assertTrue(test.setupComplete());
         assertTrue(test.isRunning());
         try {
             test.terminate();
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }
 
     @Test
     public void WalletStops() {
-        WalletKitThread test = new WalletKitThread("./bitcoin_test_files","testWalletKitThreadStops");
+        WalletKitThread test = new WalletKitThread("./bitcoin_test_files", "testWalletKitThreadStops");
         test.run();
         try {
             test.terminate();
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
         assertTrue(!test.isRunning());
     }
 
     @Test
-    public void ZZZNotReallyATestDeleteTmpFiles(){
+    public void ZZZNotReallyATestDeleteTmpFiles() {
         final File dir = new File("./bitcoin_test_files");
         final String[] allFiles = dir.list();
         for (final String file : allFiles) {

@@ -38,22 +38,22 @@ public class TestBitcoinTill {
 
     @Test
     public void AAAConstructor() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files","testConstructor");
+        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testConstructor");
         assertThat(test, notNullValue());
         assertTrue(test.isRunning());
         try {
             test.stopWalletThread();
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }
 
     @Test
     public void tillWalletStops() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files","testConstructor");
+        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testConstructor");
         try {
             test.stopWalletThread();
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
         assertTrue(!test.isRunning());
@@ -66,101 +66,101 @@ public class TestBitcoinTill {
 
     @Test
     public void tillSetsMemo() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files","testSetsMemo");
+        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testSetsMemo");
         test.setMemo(testMemo);
         assertThat(test.getMemo(), equalTo(testMemo));
         try {
             test.stopWalletThread();
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }
 
     @Test
     public void tillSetsPaymentURL() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files","testSetsPaymentURL");
+        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testSetsPaymentURL");
         test.setPaymentURL(testPaymentURL);
         assertThat(test.getPaymentURL(), equalTo(testPaymentURL));
         try {
             test.stopWalletThread();
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }
 
     @Test
     public void tillSetsMerchantData() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files","testSetsMerchantData");
+        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testSetsMerchantData");
         test.setMerchantData(testMerchantData);
         assertThat(test.getMerchantData(), equalTo(testMerchantData));
         try {
             test.stopWalletThread();
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }
 
     @Test
     public void tillCreatesBillForAmount() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files","testCreatesBillForAmount");
+        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testCreatesBillForAmount");
         Bill testBill = test.createBillForAmount(testAmount);
         Bill expectedBill = new Bill(null, null, null, testAmount, null, test.getWallet(), false);
         assertThat(testBill.getCoinAmount(), equalTo(expectedBill.getCoinAmount()));
         try {
             test.stopWalletThread();
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }
 
     @Test
     public void tillCreatesBillForAmountGBP() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files","testCreatesBillForAmountGBP");
+        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testCreatesBillForAmountGBP");
         Bill testBill = test.createBillForAmount(testGBPAmount);
         Bill expectedBill = new Bill(null, null, null, null, testGBPAmount, test.getWallet(), false);
         assertThat(testBill.getGbpAmount(), equalTo(expectedBill.getGbpAmount()));
         try {
             test.stopWalletThread();
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }
 
     @Test
     public void tillCreatesBillForAmountGBPMemo() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files","testCreatesBillForAmountGBPMemo");
-        Bill testBill = test.createBillForAmount(testGBPAmount,testMemo);
+        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testCreatesBillForAmountGBPMemo");
+        Bill testBill = test.createBillForAmount(testGBPAmount, testMemo);
         Bill expectedBill = new Bill(testMemo, null, null, null, testGBPAmount, test.getWallet(), false);
         assertThat(testBill.getGbpAmount(), equalTo(expectedBill.getGbpAmount()));
         try {
             test.stopWalletThread();
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }
 
     @Test
     public void tillCreatesBillForAmountGBPMemoSetter() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files","testCreatesBillForAmountMemoSetter");
+        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testCreatesBillForAmountMemoSetter");
         test.setMemo(testMemo);
         Bill testBill = test.createBillForAmount(testGBPAmount);
         Bill expectedBill = new Bill(testMemo, null, null, null, testGBPAmount, test.getWallet(), false);
         assertThat(testBill.getGbpAmount(), equalTo(expectedBill.getGbpAmount()));
         try {
             test.stopWalletThread();
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    public void tillSettleBill(){
+    public void tillSettleBill() {
         Receipt testReceipt = null;
 
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files","testSettleBillUsing");
+        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testSettleBillUsing");
         Bill testBill = test.createBillForAmount(testAmount);
         try {
-            PaymentSession testPaymentSession = new PaymentSession(testBill.getRequest(),false);
+            PaymentSession testPaymentSession = new PaymentSession(testBill.getRequest(), false);
 
             Wallet.SendRequest testSendRequest = testPaymentSession.getSendRequest();
 
@@ -174,7 +174,7 @@ public class TestBitcoinTill {
             List<Transaction> txil = new ArrayList<Transaction>();
             txil.add(testSendRequest.tx);
 
-            SignedBill testSignedBill = new SignedBill(testPaymentSession.getPayment(txil,test.getWallet().currentReceiveAddress(),testPaymentSession.getMemo()), null, null);
+            SignedBill testSignedBill = new SignedBill(testPaymentSession.getPayment(txil, test.getWallet().currentReceiveAddress(), testPaymentSession.getMemo()), null, null);
 
             testReceipt = test.settleBillUsing(testSignedBill);
 
@@ -186,16 +186,16 @@ public class TestBitcoinTill {
             e.printStackTrace();
         }
 
-        assertThat(testReceipt,notNullValue());
+        assertThat(testReceipt, notNullValue());
         try {
             test.stopWalletThread();
-        }catch (IllegalStateException e) {
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    public void ZZZNotReallyATestDeleteTmpFiles(){
+    public void ZZZNotReallyATestDeleteTmpFiles() {
         final File dir = new File("./bitcoin_test_files");
         final String[] allFiles = dir.list();
         for (final String file : allFiles) {
