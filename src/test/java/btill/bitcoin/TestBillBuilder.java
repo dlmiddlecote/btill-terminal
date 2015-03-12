@@ -1,4 +1,4 @@
-package btill.till;
+package btill.bitcoin;
 
 import btill.terminal.bitcoin.BillBuilder;
 import btill.terminal.values.Bill;
@@ -14,9 +14,6 @@ import org.junit.runners.MethodSorters;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by Adam Kent on 07/03/2015.
- */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestBillBuilder {
 

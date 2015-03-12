@@ -1,4 +1,4 @@
-package btill.till;
+package btill.bitcoin;
 
 import btill.terminal.bitcoin.WalletKitThread;
 import btill.terminal.values.Bill;
@@ -30,7 +30,7 @@ import static org.junit.Assert.assertThat;
 public class TestSignedBill {
 
     private Protos.Payment testPayment;
-    private WalletKitThread testWalletKitThread = new WalletKitThread("./bitcoin_test_files", "testSignedBill");
+    private WalletKitThread testWalletKitThread = new WalletKitThread("resources/bitcoin_test_files", "testSignedBill");
 
     private Coin testAmount = Coin.valueOf(17);
     private GBP testGbpAmount = new GBP(29);

@@ -30,7 +30,7 @@ public class BtillTerminal implements AutoCloseable {
     }
 
     private static Till createTill() {
-        return new BitcoinTill(null, "till");
+        return new BitcoinTill(null, "bitcoin");
     }
 
     private Menu createMenu() {

@@ -1,4 +1,4 @@
-package btill.till;
+package btill.bitcoin;
 
 import btill.terminal.bitcoin.WalletKitThread;
 import org.junit.FixMethodOrder;
@@ -19,7 +19,7 @@ public class TestWalletKitThread {
 
     @Test
     public void kitAAAConstructor() {
-        WalletKitThread test = new WalletKitThread("./bitcoin_test_files", "testWalletKitThreadConstructor");
+        WalletKitThread test = new WalletKitThread("resources/bitcoin_test_files", "testWalletKitThreadConstructor");
         assertThat(test, notNullValue());
         assertTrue(!test.setupComplete());
         assertTrue(!test.isRunning());
@@ -27,7 +27,7 @@ public class TestWalletKitThread {
 
     @Test
     public void kitWalletStarts() {
-        WalletKitThread test = new WalletKitThread("./bitcoin_test_files", "testWalletKitThreadRuns");
+        WalletKitThread test = new WalletKitThread("resources/bitcoin_test_files", "testWalletKitThreadRuns");
         test.run();
         assertTrue(test.setupComplete());
         assertTrue(test.isRunning());
@@ -41,7 +41,7 @@ public class TestWalletKitThread {
 
     @Test
     public void kitWalletStops() {
-        WalletKitThread test = new WalletKitThread("./bitcoin_test_files", "testWalletKitThreadStops");
+        WalletKitThread test = new WalletKitThread("resources/bitcoin_test_files", "testWalletKitThreadStops");
         test.run();
         try {
             while (test.isRunning())
@@ -59,11 +59,11 @@ public class TestWalletKitThread {
 
     @Test
     public void kitZZZNotReallyATestDeleteTmpFiles() {
-        final File dir = new File("./bitcoin_test_files");
+        final File dir = new File("resources/bitcoin_test_files");
         final String[] allFiles = dir.list();
         for (final String file : allFiles) {
             if (file.endsWith(".tmp")) {
-                new File("./bitcoin_test_files/" + file).delete();
+                new File("resources/bitcoin_test_files/" + file).delete();
             }
         }
     }

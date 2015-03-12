@@ -32,25 +32,25 @@ public class TestController {
         assertThat(message.getBody(), is(menuBytes));
     }
 
-    public BTMessage runMakeOrderSequence() throws InvalidProtocolBufferException {
-        fakeItem.setQuantity(1);
-        final Menu fakeMenu2 = new Menu(asList(fakeItem));
-        return controller.processRequest(Command.MAKE_ORDER, getBytes(fakeMenu2));
-    }
-
-    @Test
-    public void headerIsOKIfCommandIsMakeOrder() throws InvalidProtocolBufferException {
-        assertThat(runMakeOrderSequence().getHeader(), is("OK"));
-    }
-
-    @Test
-    public void makeOrderCommandReturnsAbillForAmount() throws InvalidProtocolBufferException {
-        fakeItem.setQuantity(3);
-        final Menu fakeMenu2 = new Menu(asList(fakeItem));
-        BTMessage message = controller.processRequest(Command.MAKE_ORDER, getBytes(fakeMenu2));
-        Bill bill = new Gson().fromJson(message.getBodyString(), Bill.class);
-        assertThat(bill.toString(), is("Bill for £3.00"));
-    }
+//    public BTMessage runMakeOrderSequence() throws InvalidProtocolBufferException {
+//        fakeItem.setQuantity(1);
+//        final Menu fakeMenu2 = new Menu(asList(fakeItem));
+//        return controller.processRequest(Command.MAKE_ORDER, getBytes(fakeMenu2));
+//    }
+//
+//    @Test
+//    public void headerIsOKIfCommandIsMakeOrder() throws InvalidProtocolBufferException {
+//        assertThat(runMakeOrderSequence().getHeader(), is("OK"));
+//    }
+//
+//    @Test
+//    public void makeOrderCommandReturnsAbillForAmount() throws InvalidProtocolBufferException {
+//        fakeItem.setQuantity(3);
+//        final Menu fakeMenu2 = new Menu(asList(fakeItem));
+//        BTMessage message = controller.processRequest(Command.MAKE_ORDER, getBytes(fakeMenu2));
+//        Bill bill = new Gson().fromJson(message.getBodyString(), Bill.class);
+//        assertThat(bill.toString(), is("Bill for £3.00"));
+//    }
 
     // not sure how to create a fake payment to put into this test
 //    @Test

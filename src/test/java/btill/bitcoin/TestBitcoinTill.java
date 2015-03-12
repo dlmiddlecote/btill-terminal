@@ -1,4 +1,4 @@
-package btill.till;
+package btill.bitcoin;
 
 import btill.terminal.bitcoin.BitcoinTill;
 import btill.terminal.values.Bill;
@@ -39,7 +39,7 @@ public class TestBitcoinTill {
 
     @Test
     public void tillAAAConstructor() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testConstructor");
+        BitcoinTill test = new BitcoinTill("resources/bitcoin_test_files", "testConstructor");
         assertThat(test, notNullValue());
         assertTrue(test.isRunning());
         try {
@@ -51,7 +51,7 @@ public class TestBitcoinTill {
 
     @Test
     public void tillWalletStops() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testConstructor");
+        BitcoinTill test = new BitcoinTill("resources/bitcoin_test_files", "testConstructor");
         try {
             test.stopWalletThread();
         } catch (IllegalStateException e) {
@@ -67,7 +67,7 @@ public class TestBitcoinTill {
 
     @Test
     public void tillSetsMemo() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testSetsMemo");
+        BitcoinTill test = new BitcoinTill("resources/bitcoin_test_files", "testSetsMemo");
         test.setMemo(testMemo);
         assertThat(test.getMemo(), equalTo(testMemo));
         try {
@@ -79,7 +79,7 @@ public class TestBitcoinTill {
 
     @Test
     public void tillSetsPaymentURL() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testSetsPaymentURL");
+        BitcoinTill test = new BitcoinTill("resources/bitcoin_test_files", "testSetsPaymentURL");
         test.setPaymentURL(testPaymentURL);
         assertThat(test.getPaymentURL(), equalTo(testPaymentURL));
         try {
@@ -91,7 +91,7 @@ public class TestBitcoinTill {
 
     @Test
     public void tillSetsMerchantData() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testSetsMerchantData");
+        BitcoinTill test = new BitcoinTill("resources/bitcoin_test_files", "testSetsMerchantData");
         test.setMerchantData(testMerchantData);
         assertThat(test.getMerchantData(), equalTo(testMerchantData));
         try {
@@ -103,7 +103,7 @@ public class TestBitcoinTill {
 
     @Test
     public void tillCreatesBillForAmount() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testCreatesBillForAmount");
+        BitcoinTill test = new BitcoinTill("resources/bitcoin_test_files", "testCreatesBillForAmount");
         Bill testBill = test.createBillForAmount(testAmount);
         Bill expectedBill = new Bill(null, null, null, testAmount, null, test.getWallet(), false);
         assertThat(testBill.getCoinAmount(), equalTo(expectedBill.getCoinAmount()));
@@ -116,7 +116,7 @@ public class TestBitcoinTill {
 
     @Test
     public void tillCreatesBillForAmountGBP() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testCreatesBillForAmountGBP");
+        BitcoinTill test = new BitcoinTill("resources/bitcoin_test_files", "testCreatesBillForAmountGBP");
         Bill testBill = test.createBillForAmount(testGBPAmount);
         Bill expectedBill = new Bill(null, null, null, null, testGBPAmount, test.getWallet(), false);
         assertThat(testBill.getGbpAmount(), equalTo(expectedBill.getGbpAmount()));
@@ -129,7 +129,7 @@ public class TestBitcoinTill {
 
     @Test
     public void tillCreatesBillForAmountGBPMemo() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testCreatesBillForAmountGBPMemo");
+        BitcoinTill test = new BitcoinTill("resources/bitcoin_test_files", "testCreatesBillForAmountGBPMemo");
         Bill testBill = test.createBillForAmount(testGBPAmount, testMemo);
         Bill expectedBill = new Bill(testMemo, null, null, null, testGBPAmount, test.getWallet(), false);
         assertThat(testBill.getGbpAmount(), equalTo(expectedBill.getGbpAmount()));
@@ -142,7 +142,7 @@ public class TestBitcoinTill {
 
     @Test
     public void tillCreatesBillForAmountGBPMemoSetter() {
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testCreatesBillForAmountMemoSetter");
+        BitcoinTill test = new BitcoinTill("resources/bitcoin_test_files", "testCreatesBillForAmountMemoSetter");
         test.setMemo(testMemo);
         Bill testBill = test.createBillForAmount(testGBPAmount);
         Bill expectedBill = new Bill(testMemo, null, null, null, testGBPAmount, test.getWallet(), false);
@@ -159,7 +159,7 @@ public class TestBitcoinTill {
         Receipt testReceipt = null;
         Protos.Payment testPayment = null;
 
-        BitcoinTill test = new BitcoinTill("./bitcoin_test_files", "testSettleBillUsing");
+        BitcoinTill test = new BitcoinTill("resources/bitcoin_test_files", "testSettleBillUsing");
         test.setMemo(testMemo);
         test.setMerchantData(testMerchantData);
         test.setPaymentURL(testPaymentURL);
@@ -208,11 +208,11 @@ public class TestBitcoinTill {
 
     @Test
     public void tillZZZNotReallyATestDeleteTmpFiles() {
-        final File dir = new File("./bitcoin_test_files");
+        final File dir = new File("resources/bitcoin_test_files");
         final String[] allFiles = dir.list();
         for (final String file : allFiles) {
             if (file.endsWith(".tmp")) {
-                new File("./bitcoin_test_files/" + file).delete();
+                new File("resources/bitcoin_test_files/" + file).delete();
             }
         }
     }

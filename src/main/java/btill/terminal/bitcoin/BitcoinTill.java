@@ -33,7 +33,7 @@ public class BitcoinTill implements Till, WalletKitThreadInterface {
     private String walletKitThreadFilePrefix = null;
     private String walletKitThreadFolder = null;
     private String memo = "Thank you for your order!";
-    private String paymentURL = "www.b-till.com";
+    private String paymentURL = "www.b-bitcoin.com";
     private byte[] merchantData = null;
     private BillBuilder billBuilder = null;
     private Receipt receipt = null;

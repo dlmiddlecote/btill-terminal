@@ -1,4 +1,4 @@
-package btill.till;
+package btill.bitcoin;
 
 import btill.terminal.bitcoin.GBP2SatoshisExchangeRate;
 import btill.terminal.values.GBP;
