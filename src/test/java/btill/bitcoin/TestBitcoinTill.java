@@ -25,9 +25,6 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by Adam Kent on 07/03/2015.
- */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestBitcoinTill {
 

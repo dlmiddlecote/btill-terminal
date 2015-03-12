@@ -3,7 +3,6 @@ package btill.bitcoin;
 import btill.terminal.bitcoin.BillBuilder;
 import btill.terminal.values.Bill;
 import btill.terminal.values.GBP;
-import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Wallet;
 import org.bitcoinj.params.TestNet3Params;
@@ -11,7 +10,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

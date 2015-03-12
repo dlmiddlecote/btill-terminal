@@ -40,75 +40,58 @@ public class TestSignedBill {
 
     @Test
     public void signedBillAAAConstructor() throws InsufficientMoneyException, IOException, PaymentProtocolException {
-        testWalletKitThread.run();
-
         signedBillHelper();
 
         SignedBill test = new SignedBill(testPayment, testGbpAmount, testAmount);
-
-        while (testWalletKitThread.isRunning())
-            testWalletKitThread.terminate();
 
         assertThat(test, notNullValue());
     }
 
     @Test
     public void signedBillGetBTCAmount() throws InsufficientMoneyException, IOException, PaymentProtocolException {
-        testWalletKitThread.run();
-
         signedBillHelper();
 
         SignedBill test = new SignedBill(testPayment, testGbpAmount, testAmount);
-
-        while (testWalletKitThread.isRunning())
-            testWalletKitThread.terminate();
 
         assertThat(test.getBtcAmount(), equalTo(testAmount));
     }
 
     @Test
     public void signedBillGetGBPAmount() throws InsufficientMoneyException, IOException, PaymentProtocolException {
-        testWalletKitThread.run();
-
         signedBillHelper();
 
         SignedBill test = new SignedBill(testPayment, testGbpAmount, testAmount);
-
-        while (testWalletKitThread.isRunning())
-            testWalletKitThread.terminate();
 
         assertThat(test.getGbpAmount(), equalTo(testGbpAmount));
     }
 
     @Test
     public void signedBillGetSerialisedPayment() throws InsufficientMoneyException, IOException, PaymentProtocolException {
-        testWalletKitThread.run();
-
         signedBillHelper();
 
         SignedBill test = new SignedBill(testPayment, testGbpAmount, testAmount);
-
-        while (testWalletKitThread.isRunning())
-            testWalletKitThread.terminate();
 
         assertThat(test.getSerialisedPayment(), equalTo(testPayment.toByteArray()));
     }
 
     @Test
     public void signedBillGetPayment() throws InsufficientMoneyException, IOException, PaymentProtocolException {
-        testWalletKitThread.run();
-
         signedBillHelper();
 
         SignedBill test = new SignedBill(testPayment, testGbpAmount, testAmount);
-
-        while (testWalletKitThread.isRunning())
-            testWalletKitThread.terminate();
 
         assertThat(test.getPayment(), equalTo(testPayment));
     }
 
     public void signedBillHelper() throws InsufficientMoneyException, IOException, PaymentProtocolException {
+        testWalletKitThread.start();
+        while (!testWalletKitThread.isRunning())
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
         Bill testBill = new Bill(testMemo, testPaymentURL, testMerchantData, testAmount, testGbpAmount, testWalletKitThread.getWalletAppKit().wallet(), false);
 
         PaymentSession testPaymentSession = new PaymentSession(testBill.getRequest(), false);
@@ -126,5 +109,8 @@ public class TestSignedBill {
         txil.add(testSendRequest.tx);
 
         testPayment = testPaymentSession.getPayment(txil, testWalletKitThread.getWalletAppKit().wallet().currentReceiveAddress(), testPaymentSession.getMemo());
+
+        while (testWalletKitThread.isRunning())
+            testWalletKitThread.terminate();
     }
 }

@@ -3,7 +3,6 @@ package btill.terminal.values;
 import btill.terminal.bitcoin.WalletKitThread;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.bitcoin.protocols.payments.Protos;
-import org.bitcoinj.core.Address;
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.core.Wallet;
@@ -14,6 +13,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import java.io.File;
+import java.lang.reflect.Field;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;

@@ -28,10 +28,10 @@ public class TestMenuItem {
         assertThat(fakeItem.getName(), is("fake"));
     }
 
-//    @Test
-//    public void returnCorrectPrice() {
-//        assertEquals(fakeItem.getPrice(), "£1.00");
-//    }
+    @Test
+    public void returnCorrectPrice() {
+        assertEquals(fakeItem.getPrice().getPence(), new GBP(100).getPence());
+    }
 
     @Test
     public void itemWithNoQuantityReturnsZero() {

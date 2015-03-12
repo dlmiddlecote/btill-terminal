@@ -1,9 +1,5 @@
 package btill.terminal.values;
 
-import java.util.Iterator;
-
-import static java.util.Arrays.asList;
-
 public class TestOrder {
 
 

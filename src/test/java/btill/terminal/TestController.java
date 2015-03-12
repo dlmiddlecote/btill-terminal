@@ -3,7 +3,6 @@ package btill.terminal;
 import btill.terminal.values.*;
 import com.google.gson.Gson;
 import com.google.protobuf.InvalidProtocolBufferException;
-import org.bitcoin.protocols.payments.Protos;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;

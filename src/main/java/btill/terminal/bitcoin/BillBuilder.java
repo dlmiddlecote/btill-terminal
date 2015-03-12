@@ -52,10 +52,11 @@ public class BillBuilder {
         return this;
     }
 
+    /*
     public BillBuilder setFreshAddress(Boolean freshAddress) {
         this.freshAddress = freshAddress;
         return this;
-    }
+    }*/
 
 
 }
