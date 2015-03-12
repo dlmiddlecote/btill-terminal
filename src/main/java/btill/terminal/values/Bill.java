@@ -96,12 +96,12 @@ public class Bill implements Serializable {
         return coinAmount;
     }
 
-    public Protos.PaymentRequest getRequest() {
+    public Protos.PaymentRequest getRequest() throws InvalidProtocolBufferException {
         try {
             return Protos.PaymentRequest.parseFrom(request);
         } catch (InvalidProtocolBufferException e) {
             e.printStackTrace();
-            return  null;
+            throw e;
         }
     }
 
