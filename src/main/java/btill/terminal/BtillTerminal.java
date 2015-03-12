@@ -20,8 +20,6 @@ public class BtillTerminal implements AutoCloseable {
 
     public void startUsing(Server server, Till till) {
         this.server = server;
-
-
         Menu menu = createMenu();
         Controller controller = new Controller(menu, till);
         server.use(controller);
@@ -33,7 +31,7 @@ public class BtillTerminal implements AutoCloseable {
         return new BitcoinTill(null, "bitcoin");
     }
 
-    private Menu createMenu() {
+    public Menu createMenu() {
         return new Menu(asList(
                 new MenuItem("Burrito", new GBP(600), "Mains"),
                 new MenuItem("Nachos", new GBP(500), "Sides"),

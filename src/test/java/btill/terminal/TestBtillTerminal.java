@@ -1,23 +1,69 @@
 package btill.terminal;
 
-import btill.terminal.values.GBP;
-import btill.terminal.values.Menu;
-import btill.terminal.values.MenuItem;
+import org.junit.Before;
+import org.junit.Test;
 
-import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-//import com.google.gson.Gson;
-//import org.bitcoin.protocols.payments.Protos.Payment;
-//import org.junit.Test;
 
 public class TestBtillTerminal {
 
-    private GBP price = new GBP(375);
-    MenuItem fakeItem = new MenuItem("fakeItem", price, "category");
-    private Menu fakeMenu = createMenu();
+    private BtillTerminal terminal;
+    private FakeServer server;
 
-    private Menu createMenu() {
-        return new Menu(asList(
-                fakeItem));
+    @Before public void startServer() {
+        terminal = new BtillTerminal();
+        server = fakeServer();
+        terminal.startUsing(server, fakeTill());
+    }
+
+    @Test public void startingTerminalStartsServer() {
+        assertThat(server.wasStarted(), is(true));
+    }
+
+    @Test
+    public void closingTerminalClosesServer() throws Exception {
+        terminal.close();
+
+        assertThat(server.wasClosed(), is(true));
+    }
+
+    private FakeServer fakeServer() {
+        return new FakeServer();
+    }
+
+    private Till fakeTill() {
+        return new FakeTill();
+    }
+
+    private class FakeServer implements Server {
+        public boolean serverStarted = false;
+        public boolean serverClosed = false;
+
+        @Override
+        public void start() {
+            serverStarted = true;
+        }
+
+        @Override
+        public void use(Controller controller) {
+
+        }
+
+        @Override
+        public void close() throws Exception {
+            serverClosed = true;
+        }
+
+        public boolean wasClosed() {
+            return serverClosed;
+        }
+
+        public boolean wasStarted() {
+            return serverStarted;
+        }
     }
 }
+
+

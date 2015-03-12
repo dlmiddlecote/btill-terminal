@@ -27,11 +27,22 @@ public class BtillServer implements Server {
     public void start() {
         try {
             service = (StreamConnectionNotifier) Connector.open(serviceUri);
-            System.out.println("Waiting...");
+        } catch (IOException e) {
+            throw new BluetoothConnectionException(e);
+        }
+        listenForConnectionsOn(service);
 
+    }
+
+    public void listenForConnectionsOn(StreamConnectionNotifier service) {
+        System.out.println("Waiting...");
+        try {
 
             while (true) {
                 StreamConnection connection = service.acceptAndOpen();
+                if (connection == null) {
+                    break;
+                }
                 InputStream incomingStream = connection.openInputStream();
                 OutputStream out = connection.openOutputStream();
                 // blocks until connection

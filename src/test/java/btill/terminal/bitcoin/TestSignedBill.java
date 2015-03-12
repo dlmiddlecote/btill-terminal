@@ -1,6 +1,5 @@
-package btill.bitcoin;
+package btill.terminal.bitcoin;
 
-import btill.terminal.bitcoin.WalletKitThread;
 import btill.terminal.values.Bill;
 import btill.terminal.values.GBP;
 import btill.terminal.values.SignedBill;

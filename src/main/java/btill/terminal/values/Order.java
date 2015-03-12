@@ -2,8 +2,6 @@ package btill.terminal.values;
 
 import java.util.Iterator;
 
-import static java.util.Arrays.asList;
-
 public class Order {
     private Menu order;
     private GBP total;
@@ -19,19 +17,12 @@ public class Order {
             MenuItem item = (MenuItem) iterator.next();
             runningTotal += item.getPrice().getPence() * item.getQuantity();
         }
-        return new GBP(runningTotal);
+        this.total = new GBP(runningTotal);
+        return total;
     }
 
     public Menu getOrder() {
         return order;
     }
 
-    public static void main(String[] args) {
-        MenuItem item = new MenuItem("lager", new GBP(300), "drink");
-        item.setQuantity(3);
-        Menu menu = new Menu(asList(item));
-        Order order = new Order(menu);
-        GBP total = order.total();
-        System.out.println("Total = " + total);
-    }
 }

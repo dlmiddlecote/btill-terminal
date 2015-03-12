@@ -1,6 +1,5 @@
-package btill.bitcoin;
+package btill.terminal.bitcoin;
 
-import btill.terminal.bitcoin.GBP2SatoshisExchangeRate;
 import btill.terminal.values.GBP;
 import org.bitcoinj.core.Coin;
 import org.junit.FixMethodOrder;
