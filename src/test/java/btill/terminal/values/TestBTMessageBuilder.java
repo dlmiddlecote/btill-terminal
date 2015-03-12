@@ -29,8 +29,4 @@ public class TestBTMessageBuilder {
         assertEquals(Command.MAKE_ORDER.toString(), message.getHeader());
         assertNotNull(message.getBody());
     }
-
-
-
-
 }

@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import java.io.File;
+import java.lang.reflect.Field;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
