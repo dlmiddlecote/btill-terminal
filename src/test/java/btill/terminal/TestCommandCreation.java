@@ -1,7 +1,7 @@
 package btill.terminal;
 
+import btill.terminal.values.GBP;
 import org.junit.Test;
-
 import static btill.terminal.Command.*;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -32,5 +32,8 @@ public class TestCommandCreation {
         Command.toCommand(null);
     }
 
-
+    @Test
+    public void invalidCommand() {
+        assertThat(InvalidCommand.class.toString(), is("class btill.terminal.Command$InvalidCommand"));
+    }
 }

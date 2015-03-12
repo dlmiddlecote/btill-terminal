@@ -1,8 +1,5 @@
 package btill.terminal.values;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +10,9 @@ public class Menu implements Iterable<MenuItem> {
     private int mOrderId;
 
     // TODO: static order IDs
+
+    public Menu() {
+    }
 
     public int getOrderId() {
         return mOrderId;
@@ -41,7 +41,11 @@ public class Menu implements Iterable<MenuItem> {
         }
     }
 
-    public Menu() {
+
+    public void resetQuantities() {
+        for (MenuItem item : items) {
+            item.setQuantity(0);
+        }
     }
 
     @Override
@@ -53,16 +57,6 @@ public class Menu implements Iterable<MenuItem> {
     @Override
     public String toString() {
         return "Menu{" + items + '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return EqualsBuilder.reflectionEquals(this, o);
-    }
-
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     public void add(MenuItem item) {
