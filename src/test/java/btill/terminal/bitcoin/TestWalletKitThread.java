@@ -1,5 +1,6 @@
 package btill.terminal.bitcoin;
 
+import btill.terminal.bitcoin.WalletKitThread;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -46,6 +47,11 @@ public class TestWalletKitThread {
             while (test.isRunning())
                 test.terminate();
         } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         assertTrue(!test.isRunning());

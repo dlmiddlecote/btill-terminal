@@ -1,20 +1,14 @@
 package btill.terminal;
 
 import btill.terminal.values.BTMessage;
-import btill.terminal.values.Menu;
 import com.google.gson.Gson;
 import org.junit.Test;
-import org.spongycastle.asn1.DERBitString;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.microedition.io.StreamConnection;
 import javax.microedition.io.StreamConnectionNotifier;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
 
 public class BtillServerTest {
     private static final String SERVICE_URI = "someUri";
@@ -22,9 +16,15 @@ public class BtillServerTest {
     private final BtillServer server = new BtillServer(SERVICE_URI);
 
 
-    @Test public void canListenForConnections() {
+    @Test
+    public void canListenForConnections() {
         server.use(new DummyController());
         server.listenForConnectionsOn(dummyService());
+    }
+
+    @Test(expected=BtillServer.BluetoothConnectionException.class)
+    public void errorThrownWhenNoBluetoothConnection() {
+        server.start();
     }
 
     private DummyStreamConnectionNotifier dummyService() {
@@ -40,6 +40,7 @@ public class BtillServerTest {
             return exampleMessage();
         }
     }
+
 
     private class DummyStreamConnectionNotifier implements StreamConnectionNotifier {
         int connectionsRequested = 0;
@@ -59,7 +60,7 @@ public class BtillServerTest {
         }
 
         public boolean wasClosed() {
-            return closed ;
+            return closed;
         }
     }
 
@@ -69,7 +70,7 @@ public class BtillServerTest {
 
         @Override
         public InputStream openInputStream() throws IOException {
-            return  new ByteArrayInputStream(asJsonString(exampleMessage()).getBytes(StandardCharsets.UTF_8));
+            return new ByteArrayInputStream(asJsonString(exampleMessage()).getBytes(StandardCharsets.UTF_8));
         }
 
         @Override
