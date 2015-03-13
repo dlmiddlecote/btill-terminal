@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
  * WalletKitThread abstracts the functionality of the {@link org.bitcoinj.core.Wallet} into a separate thread which
@@ -66,6 +68,16 @@ public class WalletKitThread extends Thread {
 
             }
         };
+
+        File checkpointFile = new File("../../../../resources/bitcoin_files/checkpoints");
+        FileInputStream checkpointStream = null;
+        try {
+            checkpointStream = new FileInputStream(checkpointFile);
+        } catch (IOException e){}
+
+        if (checkpointStream != null){
+            _walletAppKit.setCheckpoints(checkpointStream);
+        }
 
         _walletAppKit.startAsync();
         Log.debug("WalletAppKit has started");
