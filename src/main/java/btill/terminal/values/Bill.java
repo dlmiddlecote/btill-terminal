@@ -19,8 +19,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Bill acts as a wrapper class for a {@link org.bitcoin.protocols.payments.Protos.PaymentRequest}. It is constructed
@@ -42,6 +45,8 @@ public class Bill implements Serializable {
     private GBP gbpAmount = null;
     private byte[] request = null;
     private Coin coinAmount = null;
+    private int orderId = 0;
+    private Date orderIdDate;
 
     @Override
     public String toString() {
@@ -69,6 +74,8 @@ public class Bill implements Serializable {
         this.coinAmount = amount;
         this.gbpAmount = gbpAmount;
         this.wallet = wallet;
+        orderId = setOrderId();
+        orderIdDate = setOrderIdDate();
         buildPaymentRequest(freshAddress);
     }
 
@@ -108,6 +115,23 @@ public class Bill implements Serializable {
 
     public PaymentRequest getPaymentRequest() {
         return paymentRequest;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    private int setOrderId() {
+        return new Random().nextInt(99);
+    }
+
+    private Date setOrderIdDate() {
+        return new Date(System.currentTimeMillis());
+    }
+
+    public String getDateAsString() {
+        SimpleDateFormat format = new SimpleDateFormat("d/M/y HH:mm");
+        return format.format(orderIdDate);
     }
 
     public void buildPaymentRequest(Boolean freshAddress) {
@@ -181,7 +205,7 @@ public class Bill implements Serializable {
         }
 
         if (payment != null)
-            return new SignedBill(payment, gbpAmount, coinAmount);
+            return new SignedBill(payment, gbpAmount, coinAmount, orderId);
         else
             return null;
     }

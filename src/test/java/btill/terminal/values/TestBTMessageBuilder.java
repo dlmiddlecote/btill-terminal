@@ -55,8 +55,8 @@ public class TestBTMessageBuilder {
     @Test
     public void testBuildSignedBill() throws InsufficientMoneyException, PaymentProtocolException, IOException {
         BTMessageBuilderHelper();
-        BTMessage message = new BTMessageBuilder(testPayment, testGbpAmount, testAmount).build();
-        SignedBill testSignedBill = new SignedBill(testPayment, testGbpAmount, testAmount);
+        BTMessage message = new BTMessageBuilder(testPayment, testGbpAmount, testAmount, 1).build();
+        SignedBill testSignedBill = new SignedBill(testPayment, testGbpAmount, testAmount, 1);
         assertEquals(Command.SETTLE_BILL.toString(), message.getHeader());
         assertNotNull(message.getBody());
         SignedBill testSignedBill2 = new Gson().fromJson(new String(message.getBody(), 0, message.getBody().length), SignedBill.class);

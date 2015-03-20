@@ -60,6 +60,7 @@ public class WalletKitThread extends Thread {
                 //_walletAppKit.peerGroup().setMaxConnections(11);
                 _walletAppKit.peerGroup().setFastCatchupTimeSecs(_walletAppKit.wallet().getEarliestKeyCreationTime());
                 _walletAppKit.setAutoStop(false);
+                _walletAppKit.wallet().doesAcceptRiskyTransactions();
                 Log.info(_walletAppKit.wallet().toString(false, false, false, null));
                 Log.info(_walletAppKit.wallet().getRecentTransactions(3,true).toString());
                 //System.out.println(peerGroup().getConnectedPeers().toString());

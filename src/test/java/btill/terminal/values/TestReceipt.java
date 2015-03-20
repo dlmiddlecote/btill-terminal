@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -35,7 +36,7 @@ public class TestReceipt {
     public void receiptAAAConstructor() throws InsufficientMoneyException, PaymentProtocolException, IOException {
         receiptHelper();
 
-        Receipt test = new Receipt(testPayment, testGbpAmount, testAmount);
+        Receipt test = new Receipt(testPayment, testGbpAmount, testAmount, new Date(System.currentTimeMillis()), 1);
 
         assertThat(test, notNullValue());
     }
@@ -44,7 +45,7 @@ public class TestReceipt {
     public void receiptGetBTCAmount() throws InsufficientMoneyException, IOException, PaymentProtocolException {
         receiptHelper();
 
-        Receipt test = new Receipt(testPayment, testGbpAmount, testAmount);
+        Receipt test = new Receipt(testPayment, testGbpAmount, testAmount, new Date(System.currentTimeMillis()), 1);
 
         assertThat(test.getBitcoins(), equalTo(testAmount));
     }
@@ -53,7 +54,7 @@ public class TestReceipt {
     public void receiptGetGBPAmount() throws InsufficientMoneyException, IOException, PaymentProtocolException {
         receiptHelper();
 
-        Receipt test = new Receipt(testPayment, testGbpAmount, testAmount);
+        Receipt test = new Receipt(testPayment, testGbpAmount, testAmount, new Date(System.currentTimeMillis()), 1);
 
         assertThat(test.getGbp(), equalTo(testGbpAmount));
     }
@@ -62,7 +63,7 @@ public class TestReceipt {
     public void receiptGetPaymentACK() throws InsufficientMoneyException, IOException, PaymentProtocolException {
         receiptHelper();
 
-        Receipt test = new Receipt(testPayment, testGbpAmount, testAmount);
+        Receipt test = new Receipt(testPayment, testGbpAmount, testAmount, new Date(System.currentTimeMillis()), 1);
 
         Protos.PaymentACK testPaymentACK = PaymentProtocol.createPaymentAck(testPayment, "TRANSACTION SUCCEEDED:\n" + testPayment.getMemo());
 

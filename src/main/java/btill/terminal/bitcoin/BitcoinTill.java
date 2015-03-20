@@ -7,15 +7,18 @@ import btill.terminal.values.Receipt;
 import btill.terminal.values.SignedBill;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.Wallet;
+import org.bitcoinj.core.*;
+import org.bitcoinj.params.TestNet3Params;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.util.test.Test;
 
 import javax.annotation.Nullable;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * BitcoinTill deals with the financial transactions of the program.
@@ -33,7 +36,7 @@ public class BitcoinTill implements Till, WalletKitThreadInterface {
     private String walletKitThreadFilePrefix = null;
     private String walletKitThreadFolder = null;
     private String memo = "Thank you for your order!";
-    private String paymentURL = "www.b-bitcoin.com";
+    private String paymentURL = "www.b-till.com";
     private byte[] merchantData = null;
     private BillBuilder billBuilder = null;
     private Receipt receipt = null;
@@ -165,31 +168,41 @@ public class BitcoinTill implements Till, WalletKitThreadInterface {
         tx = new Transaction(walletKitThread.getWalletAppKit().params(),
                 signedBill.getPayment().getTransactions(0).toByteArray());
 
-        // commits transaction to the blockchain
-        getWallet().commitTx(tx);
-        Log.info("\nCommitted Transaction");
-
         // awaits confirmation of broadcast to blockchain
         Future<Transaction> transactionFuture = walletKitThread.getWalletAppKit().peerGroup().broadcastTransaction(tx);
         Log.info("\nBroadcast Transaction");
         Transaction txReturn = null;
         try {
-            txReturn = transactionFuture.get();
+            txReturn = transactionFuture.get(15, TimeUnit.SECONDS);
             Log.info("\nTransaction Broadcast Returned!");
 
             // build receipt for signedBill
-            receipt = new Receipt(signedBill.getPayment(), signedBill.getGbpAmount(), signedBill.getBtcAmount());
+            receipt = new Receipt(signedBill.getPayment(), signedBill.getGbpAmount(), signedBill.getBtcAmount(), new Date(System.currentTimeMillis()), signedBill.getOrderId());
 
         } catch (InterruptedException e) {
             Log.error("\nReceipt retrieval interrupted");
-            e.printStackTrace();
+            receipt = null;
+           // e.printStackTrace();
         } catch (ExecutionException e) {
             Log.error("\nReceipt retrieval execution interrupted!");
-            e.printStackTrace();
+            receipt = null;
+            //e.printStackTrace();
+        } catch (TimeoutException e) {
+            Log.error("\nReceipt retrieval timed out");
+            receipt = null;
+            //e.printStackTrace();
         }
 
-        Log.info(getWallet().toString(false,false,false,null));
-        Log.info(getWallet().getPendingTransactions().toString());
+        // commits transaction to the blockchain
+        if (receipt != null) {
+            //getWallet().maybeCommitTx(tx);
+            if (getWallet().maybeCommitTx(tx)) {
+                Log.info("\nCommitted Transaction");
+                Log.info(getWallet().toString(false,false,false,null));
+                Log.info("\nPending Transactions");
+                Log.info(getWallet().getPendingTransactions().toString());
+            }
+        }
 
         return receipt;
     }

@@ -177,7 +177,7 @@ public class TestBitcoinTill {
 
             testPayment = testPaymentSession.getPayment(txil, test.getWallet().currentReceiveAddress(), testPaymentSession.getMemo());
 
-            SignedBill testSignedBill = new SignedBill(testPayment, testGBPAmount, testAmount);
+            SignedBill testSignedBill = new SignedBill(testPayment, testGBPAmount, testAmount, 1);
 
             testReceipt = test.settleBillUsing(testSignedBill);
 

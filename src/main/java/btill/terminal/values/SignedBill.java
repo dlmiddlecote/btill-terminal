@@ -11,14 +11,16 @@ import org.bitcoinj.core.Coin;
  */
 public class SignedBill {
 
-    private final GBP gbpAmount;
-    private final Coin btcAmount;
     private byte[] serialisedPayment;
+    private GBP gbpAmount;
+    private Coin btcAmount;
+    private int orderId;
 
-    public SignedBill(Protos.Payment payment, GBP gbpAmount, Coin btcAmount) {
+    public SignedBill(Protos.Payment payment, GBP gbpAmount, Coin btcAmount, int orderId) {
         serialisedPayment = payment.toByteArray();
         this.gbpAmount = gbpAmount;
         this.btcAmount = btcAmount;
+        this.orderId = orderId;
     }
 
     public byte[] getSerialisedPayment() {
@@ -28,11 +30,9 @@ public class SignedBill {
     public Protos.Payment getPayment() {
         try {
             return Protos.Payment.parseFrom(serialisedPayment);
-        } catch (InvalidProtocolBufferException e){
-            e.printStackTrace();
+        } catch (InvalidProtocolBufferException e) {
             return null;
         }
-
     }
 
     public GBP getGbpAmount() {
@@ -41,5 +41,9 @@ public class SignedBill {
 
     public Coin getBtcAmount() {
         return btcAmount;
+    }
+
+    public int getOrderId() {
+        return orderId;
     }
 }

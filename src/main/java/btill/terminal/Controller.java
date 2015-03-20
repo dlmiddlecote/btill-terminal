@@ -30,14 +30,23 @@ public class Controller {
                 Order order = new Order(deserializeMenu(content));
                 amount = order.total();
                 Bill bill = till.createBillForAmount(amount);
-                BTMessage message = new BTMessageBuilder(OK, bill).build();
-                return message;
+                if (bill != null) {
+                    return new BTMessageBuilder(OK, bill).build();
+                }
+                else {
+                    return new BTMessageBuilder(NOT_FOUND).build();
+                }
             }
             case SETTLE_BILL: {
                 SignedBill signedBill = deserializeSignedBill(content);
                 Receipt receipt = till.settleBillUsing(signedBill);
                 System.out.println("Created receipt");
-                return new BTMessageBuilder(OK, receipt).build();
+                if (receipt != null) {
+                    return new BTMessageBuilder(OK, receipt).build();
+                }
+                else {
+                    return new BTMessageBuilder(NOT_FOUND).build();
+                }
             }
             default: {
                 return new BTMessageBuilder(NOT_FOUND).build();
