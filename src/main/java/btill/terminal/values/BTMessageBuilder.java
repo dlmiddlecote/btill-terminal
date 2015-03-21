@@ -26,15 +26,21 @@ public class BTMessageBuilder {
         this.header = status.toString();
     }
 
-    public BTMessageBuilder(Protos.Payment payment, GBP gbpAmount, Coin btcAmount, int orderId) {
+    public BTMessageBuilder(int orderId, Protos.Payment payment, GBP gbpAmount, Coin btcAmount, LocationData locationData) {
         this.header = "SETTLE_BILL";
-        String json = new Gson().toJson(new SignedBill(payment, gbpAmount, btcAmount, orderId), SignedBill.class);
+        String json = new Gson().toJson(new SignedBill(orderId, payment, gbpAmount, btcAmount, locationData), SignedBill.class);
         this.body = json.getBytes();
     }
 
     public BTMessageBuilder(Menu menu) {
         this.header = "MAKE_ORDER";
         String json = new Gson().toJson(menu, Menu.class);
+        this.body = json.getBytes();
+    }
+
+    public BTMessageBuilder(Status status, Receipt receipt, Integer tableNumber) {
+        this.header = status.toString();
+        String json = new Gson().toJson(new OrderConfirmation(receipt, tableNumber), OrderConfirmation.class);
         this.body = json.getBytes();
     }
 

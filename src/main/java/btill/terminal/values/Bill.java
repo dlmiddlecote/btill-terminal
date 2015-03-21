@@ -205,7 +205,7 @@ public class Bill implements Serializable {
         }
 
         if (payment != null)
-            return new SignedBill(payment, gbpAmount, coinAmount, orderId);
+            return new SignedBill(1, payment, gbpAmount, coinAmount, null);
         else
             return null;
     }

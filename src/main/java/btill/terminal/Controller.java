@@ -40,14 +40,25 @@ public class Controller {
             case SETTLE_BILL: {
                 SignedBill signedBill = deserializeSignedBill(content);
                 Receipt receipt = till.settleBillUsing(signedBill);
+                Integer tableNumber = tableNumberFromData(signedBill.getLocationData());
                 System.out.println("Created receipt");
-                if (receipt != null) {
-                    return new BTMessageBuilder(OK, receipt).build();
+                if (receipt != null && tableNumber > 0) {
+                    return new BTMessageBuilder(OK, receipt, tableNumber).build();
                 }
                 else {
                     return new BTMessageBuilder(NOT_FOUND).build();
                 }
             }
+            /*case LOCATION: {
+                LocationData locationData = deserializeLocation(content);
+                Integer tableNumber = tableNumberFromData(locationData);
+                if (tableNumber > 0) {
+                    return new BTMessageBuilder(OK, tableNumber).build();
+                }
+                else {
+                    return new BTMessageBuilder(NOT_FOUND).build();
+                }
+            }*/
             default: {
                 return new BTMessageBuilder(NOT_FOUND).build();
             }
@@ -62,4 +73,13 @@ public class Controller {
     private SignedBill deserializeSignedBill(byte[] content) {
         return new Gson().fromJson(new String(content, 0, content.length), SignedBill.class);
     }
+
+    private LocationData deserializeLocation(byte[] content) {
+        return new Gson().fromJson(new String(content, 0, content.length), LocationData.class);
+    }
+
+    private Integer tableNumberFromData(LocationData locationData) {
+        return 4;
+    }
+
 }

@@ -35,7 +35,7 @@
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpcore-nio:4.3.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpmime:4.3.6" level="project" />
     <orderEntry type="library" name="Maven: org.json:json:20140107" level="project" />
-    <orderEntry type="library" name="Maven: net.sf.bluecove:bluecove:2.1.0" level="project" />
-    <orderEntry type="library" name="Maven: net.sf.bluecove:bluecove-gpl:2.1.0" level="project" />
+    <orderEntry type="library" name="Maven: br.com.criativasoft.opendevice.ext:bluecove:2.1.1-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: br.com.criativasoft.opendevice.ext:bluecove-gpl-arm:2.1.1-SNAPSHOT" level="project" />
   </component>
 </module>

@@ -5,6 +5,7 @@ public enum Command {
     MAKE_ORDER,
     SETTLE_BILL;
 
+
     public static Command toCommand(String value) {
         if (value == null) {
             throw new InvalidCommand(value);
