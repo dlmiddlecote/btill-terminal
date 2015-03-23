@@ -1,6 +1,7 @@
 package btill.terminal.values;
 
 import btill.terminal.Status;
+import btill.terminal.values.Location.LocationData;
 import com.google.gson.Gson;
 import org.bitcoin.protocols.payments.Protos;
 import org.bitcoinj.core.Coin;

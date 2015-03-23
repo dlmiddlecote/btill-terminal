@@ -44,7 +44,7 @@ public class TestBTMessageBuilder {
     public void testBuildMenu() throws Exception {
         ArrayList<MenuItem> testList = new ArrayList<MenuItem>();
         testList.add(new MenuItem("Coke", new GBP(150), "Drinks"));
-        Menu testMenu = new Menu(testList);
+        Menu testMenu = new Menu("Restaurant", testList);
         BTMessage message = new BTMessageBuilder(testMenu).build();
         assertEquals(Command.MAKE_ORDER.toString(), message.getHeader());
         assertNotNull(message.getBody());

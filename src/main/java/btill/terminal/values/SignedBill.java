@@ -1,5 +1,6 @@
 package btill.terminal.values;
 
+import btill.terminal.values.Location.LocationData;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.bitcoin.protocols.payments.Protos;
 import org.bitcoinj.core.Coin;

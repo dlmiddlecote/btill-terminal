@@ -64,7 +64,7 @@ public class BtillServer implements Server {
                     }
                 }
 
-                System.out.println("Read " + bytesTotal + " bytes, Received string: " + receivedString);
+                //System.out.println("Read " + bytesTotal + " bytes, Received string: " + receivedString);
                 BTMessage incomingMessage = new BTMessageBuilder(receivedString.getBytes()).build();
 
                 BTMessage responseMessage = controller.processRequest(toCommand(incomingMessage.getHeader()), incomingMessage.getBody());
@@ -74,7 +74,7 @@ public class BtillServer implements Server {
                 int remaining = messageBytes.length;
                 for (int i = 0; i <= (messageBytes.length / 990); i++) {
                     out.write(messageBytes, i * 990, Math.min(990, remaining));
-                    System.out.println("Written: " + new String(messageBytes, i * 990, Math.min(990, remaining)));
+                    //System.out.println("Written: " + new String(messageBytes, i * 990, Math.min(990, remaining)));
                     out.flush();
                     remaining -= 990;
                 }

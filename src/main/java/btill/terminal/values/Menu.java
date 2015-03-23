@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Menu implements Iterable<MenuItem> {
+    private String restaurantName;
     private List<MenuItem> items = new ArrayList<MenuItem>();
     private ArrayList<String> categories = new ArrayList<String>();
     private int mOrderId;
@@ -12,6 +13,10 @@ public class Menu implements Iterable<MenuItem> {
     // TODO: static order IDs
 
     public Menu() {
+    }
+
+    public String getRestaurantName() {
+        return restaurantName;
     }
 
     public int getOrderId() {
@@ -26,7 +31,8 @@ public class Menu implements Iterable<MenuItem> {
         return categories;
     }
 
-    public Menu(List<MenuItem> items) {
+    public Menu(String restaurantName, List<MenuItem> items) {
+        this.restaurantName = restaurantName;
         this.items = items;
         for (MenuItem item : items) {
             if (!categories.contains(item.getCategory()))

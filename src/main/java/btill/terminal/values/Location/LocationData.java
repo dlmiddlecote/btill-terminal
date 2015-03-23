@@ -1,4 +1,4 @@
-package btill.terminal.values;
+package btill.terminal.values.Location;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -21,5 +21,17 @@ public class LocationData {
     public double getDistance(String address) {
         return locations.get(address);
     }
+
+    public int size() {
+        return locations.size();
+    }
+
+    @Override
+    public String toString() {
+        return "LocationData{" +
+                "locations=" + locations +
+                '}';
+    }
+
 
 }

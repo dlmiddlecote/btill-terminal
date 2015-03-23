@@ -17,7 +17,7 @@ public class TestMenu {
     @Before
     public void setUp() throws Exception {
         testList.add(new MenuItem("Coke", new GBP(150), "Drinks"));
-        testMenu = new Menu(testList);
+        testMenu = new Menu("Restaurant", testList);
     }
 
     @Test

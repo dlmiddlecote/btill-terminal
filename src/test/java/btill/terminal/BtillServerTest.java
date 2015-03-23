@@ -33,7 +33,7 @@ public class BtillServerTest {
 
     private class DummyController extends Controller {
         public DummyController() {
-            super(null, null);
+            super(null, null, null);
         }
 
         public BTMessage processRequest(Command command, byte[] content) {
