@@ -19,6 +19,15 @@ public class BeaconData {
                 return beacon;
             }
         }
+        return beacons.get(id);
+    }
+
+    public EstimoteBeacon get(String address) {
+        for (EstimoteBeacon beacon : beacons) {
+            if (beacon.getAddress().equals(address))  {
+                return beacon;
+            }
+        }
         return null;
     }
 }

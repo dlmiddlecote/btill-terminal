@@ -43,27 +43,17 @@ public class Controller {
             case SETTLE_BILL: {
                 SignedBill signedBill = deserializeSignedBill(content);
                 Receipt receipt = till.settleBillUsing(signedBill);
-                //Integer tableNumber = restaurant.tableNumberFromData(signedBill.getLocationData());
-                Integer tableNumber = restaurant.tableNumberFromData(newLocationData(2));
+                Integer tableNumber = restaurant.tableNumberFromData(signedBill.getLocationData());
+                //Integer tableNumber = -1;
                 System.out.println("Created receipt");
                 System.out.println("Location Data: " + signedBill.getLocationData().toString());
-                if (receipt != null && tableNumber > 0) {
+                if (receipt != null) {// && tableNumber > 0) {
                     return new BTMessageBuilder(OK, receipt, tableNumber).build();
                 }
                 else {
                     return new BTMessageBuilder(NOT_FOUND).build();
                 }
             }
-            /*case LOCATION: {
-                LocationData locationData = deserializeLocation(content);
-                Integer tableNumber = tableNumberFromData(locationData);
-                if (tableNumber > 0) {
-                    return new BTMessageBuilder(OK, tableNumber).build();
-                }
-                else {
-                    return new BTMessageBuilder(NOT_FOUND).build();
-                }
-            }*/
             default: {
                 return new BTMessageBuilder(NOT_FOUND).build();
             }
@@ -87,43 +77,26 @@ public class Controller {
     // TODO this is just for a trial
     public static ArrayList<Table> newTables() {
         ArrayList<Table> tables = new ArrayList<Table>();
-        tables.add(new Table(1, new Position(1.0, 4.0), 1.0));
-        tables.add(new Table(2, new Position(4.0, 3.0), 1.0));
-        tables.add(new Table(3, new Position(2.0, 1.0), 1.0));
+        // Table(Table Number) - could add in extra features later on
+        tables.add(new Table(1));
+        tables.add(new Table(2));
+        tables.add(new Table(3));
+        tables.add(new Table(4));
+        tables.add(new Table(5));
+        tables.add(new Table(6));
         return tables;
     }
 
-    public static BeaconData newBeacons() {
+    public static BeaconData newBeacons(TableData tables) {
         ArrayList<EstimoteBeacon> beacons = new ArrayList<EstimoteBeacon>();
-        beacons.add(new EstimoteBeacon(1, "EB1", new Position(0.0, 5.0)));
-        beacons.add(new EstimoteBeacon(2, "EB2", new Position(5.0, 5.0)));
-        beacons.add(new EstimoteBeacon(3, "EB3", new Position(5.0, 0.0)));
-        beacons.add(new EstimoteBeacon(4, "EB4", new Position(0.0, 0.0)));
+
+        beacons.add(new EstimoteBeacon(1, "E6:AC:03:43:A3:CD", 1)); // Green Old Box
+        beacons.add(new EstimoteBeacon(2, "C7:9B:45:5F:A4:67", 2)); // Green New Box
+        beacons.add(new EstimoteBeacon(3, "D6:17:6A:43:12:FD", 3)); // Dark Blue Old Box
+        beacons.add(new EstimoteBeacon(4, "D9:A5:1D:9B:40:AE", 4)); // Dark Blue New Box
+        beacons.add(new EstimoteBeacon(5, "D0:41:C0:E9:87:79", 5)); // Light Blue Old Box
+        beacons.add(new EstimoteBeacon(6, "F7:15:68:F9:01:4F", 6)); // Light Blue New Box
 
         return new BeaconData(beacons);
-    }
-
-    private LocationData newLocationData(int table) {
-        LocationData locationData = new LocationData(new TreeMap<String, Double>());
-        if (table == 1) {
-            locationData.add("EB1", Math.sqrt(18.25));
-            locationData.add("EB2", Math.sqrt(28.25));
-            locationData.add("EB3", Math.sqrt(13.25));
-            locationData.add("EB4", Math.sqrt(3.25));
-        }
-        else if (table == 2) {
-            locationData.add("EB1", Math.sqrt(21.25));
-            locationData.add("EB2", Math.sqrt(11.25));
-            locationData.add("EB3", Math.sqrt(6.25));
-            locationData.add("EB4", Math.sqrt(16.25));
-        }
-        else if (table == 3) {
-            locationData.add("EB1", Math.sqrt(8));
-            locationData.add("EB2", Math.sqrt(13));
-            locationData.add("EB3", Math.sqrt(18));
-            locationData.add("EB4", Math.sqrt(13));
-        }
-
-        return locationData;
     }
 }

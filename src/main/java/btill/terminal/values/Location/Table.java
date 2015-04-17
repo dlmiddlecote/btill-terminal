@@ -6,28 +6,12 @@ package btill.terminal.values.Location;
 public class Table {
 
     private int tableNumber;
-    private Position centre;
-    private double radius;
 
-    public Table(int number, Position centre, double radius) {
+    public Table(int number) {
         tableNumber = number;
-        this.centre = centre;
-        this.radius = radius;
     }
 
     public int getTableNumber() {
         return tableNumber;
-    }
-
-    public double getCentreX() {
-        return centre.getX();
-    }
-
-    public double getCentreY() {
-        return centre.getY();
-    }
-
-    public double getRadius() {
-        return radius;
     }
 }

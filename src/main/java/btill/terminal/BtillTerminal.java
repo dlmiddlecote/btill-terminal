@@ -2,11 +2,15 @@ package btill.terminal;
 
 import btill.terminal.bitcoin.BitcoinTill;
 import btill.terminal.values.GBP;
+import btill.terminal.values.Location.Table;
+import btill.terminal.values.Location.TableData;
 import btill.terminal.values.Menu;
 import btill.terminal.values.MenuItem;
 import btill.terminal.values.Restaurant;
 
 import javax.bluetooth.UUID;
+
+import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
 
@@ -21,7 +25,9 @@ public class BtillTerminal implements AutoCloseable {
 
     public void startUsing(Server server, Till till) {
         this.server = server;
-        Restaurant restaurant = new Restaurant("Pret", Controller.newBeacons(), Controller.newTables());
+        ArrayList<Table> tableArrayList = Controller.newTables();
+        TableData tables = new TableData(tableArrayList);
+        Restaurant restaurant = new Restaurant("Dan's Mexican Restaurant", Controller.newBeacons(tables), tableArrayList);
         Menu menu = createMenu(restaurant.getName());
         Controller controller = new Controller(menu, till, restaurant);
         server.use(controller);
@@ -41,10 +47,11 @@ public class BtillTerminal implements AutoCloseable {
                 new MenuItem("Tacos", new GBP(600), "Mains"),
                 new MenuItem("Guacamole", new GBP(200), "Dips"),
                 new MenuItem("Garlic & Herb", new GBP(50), "Dips"),
-                new MenuItem("Ketchup", new GBP(1), "Mains"),
                 new MenuItem("Spicy Rice", new GBP(300), "Sides"),
                 new MenuItem("Horchata", new GBP(350), "Drinks"),
-                new MenuItem("Mojito", new GBP(700), "Drinks")
+                new MenuItem("Mojito", new GBP(700), "Drinks"),
+                new MenuItem("Tostada", new GBP(420), "Mains"),
+                new MenuItem("Ketchup", new GBP(1), "Mains")
 
         ));
     }

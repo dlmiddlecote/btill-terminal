@@ -33,7 +33,7 @@ public class Restaurant {
 
     public Integer tableNumberFromData(LocationData locationData) {
 
-        if (locationData.size() >= 4) {
+        /*if (locationData.size() >= 4) {
             EstimoteBeacon estimote1 = beacons.get(1);
             EstimoteBeacon estimote2 = beacons.get(2);
             EstimoteBeacon estimote3 = beacons.get(3);
@@ -58,9 +58,15 @@ public class Restaurant {
             double xCoord2 = ((y * y) - (z * z) + DCSquared) / (2 * Math.sqrt(DCSquared));
 
             double yCoord1 = ((w * w) - (z * z) + ADSquared) / (2 * Math.sqrt(ADSquared));
-            double yCoord2 = ((y * y) - (x * x) + BCSquared) / (2 * Math.sqrt(BCSquared));
+            double yCoord2 = ((y * y) - (x * x) + BCSquared) / (2 * Math.sqrt(BCSquared));*/
 
-            double xpos = 0.5 * (xCoord1 - xCoord2 + Math.sqrt(ABSquared));
+            /*double xCoord1 = ((z * z) - (y * y) + DCSquared) / (2 * Math.sqrt(DCSquared));
+            double xCoord2 = ((x * x) - (w * w) + ABSquared) / (2 * Math.sqrt(ABSquared));
+
+            double yCoord1 = ((z * z) - (w * w) + ADSquared) / (2 * Math.sqrt(ADSquared));
+            double yCoord2 = ((x * x) - (y * y) + BCSquared) / (2 * Math.sqrt(BCSquared));*/
+
+            /*double xpos = 0.5 * (xCoord1 - xCoord2 + Math.sqrt(ABSquared));
             double ypos = 0.5 * (yCoord1 - yCoord2 + Math.sqrt(ADSquared));
 
             System.out.println("Position is: (" + xpos + ", " + ypos + ")");
@@ -75,6 +81,12 @@ public class Restaurant {
             }
         }
 
-        return -1;
+        return -1;*/
+
+        EstimoteBeacon nearestBeacon = locationData.getNearestBeacon(beacons);
+        if (nearestBeacon == null || locationData.isOld()) {
+            return -1;
+        }
+        return locationData.getNearestBeacon(beacons).getTableNumber();
     }
 }
