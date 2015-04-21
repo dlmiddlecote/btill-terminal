@@ -41,7 +41,7 @@ public class TestSignedBill {
     public void signedBillAAAConstructor() throws InsufficientMoneyException, IOException, PaymentProtocolException {
         signedBillHelper();
 
-        SignedBill test = new SignedBill(testPayment, testGbpAmount, testAmount, 1);
+        SignedBill test = new SignedBill(1, testPayment, testGbpAmount, testAmount, null);
 
         assertThat(test, notNullValue());
     }
@@ -50,7 +50,7 @@ public class TestSignedBill {
     public void signedBillGetBTCAmount() throws InsufficientMoneyException, IOException, PaymentProtocolException {
         signedBillHelper();
 
-        SignedBill test = new SignedBill(testPayment, testGbpAmount, testAmount, 1);
+        SignedBill test = new SignedBill(1, testPayment, testGbpAmount, testAmount, null);
 
         assertThat(test.getBtcAmount(), equalTo(testAmount));
     }
@@ -59,7 +59,7 @@ public class TestSignedBill {
     public void signedBillGetGBPAmount() throws InsufficientMoneyException, IOException, PaymentProtocolException {
         signedBillHelper();
 
-        SignedBill test = new SignedBill(testPayment, testGbpAmount, testAmount, 1);
+        SignedBill test = new SignedBill(1, testPayment, testGbpAmount, testAmount, null);
 
         assertThat(test.getGbpAmount(), equalTo(testGbpAmount));
     }
@@ -68,7 +68,7 @@ public class TestSignedBill {
     public void signedBillGetSerialisedPayment() throws InsufficientMoneyException, IOException, PaymentProtocolException {
         signedBillHelper();
 
-        SignedBill test = new SignedBill(testPayment, testGbpAmount, testAmount, 1);
+        SignedBill test = new SignedBill(1, testPayment, testGbpAmount, testAmount, null);
 
         assertThat(test.getSerialisedPayment(), equalTo(testPayment.toByteArray()));
     }
@@ -77,7 +77,7 @@ public class TestSignedBill {
     public void signedBillGetPayment() throws InsufficientMoneyException, IOException, PaymentProtocolException {
         signedBillHelper();
 
-        SignedBill test = new SignedBill(testPayment, testGbpAmount, testAmount, 1);
+        SignedBill test = new SignedBill(1, testPayment, testGbpAmount, testAmount, null);
 
         assertThat(test.getPayment(), equalTo(testPayment));
     }

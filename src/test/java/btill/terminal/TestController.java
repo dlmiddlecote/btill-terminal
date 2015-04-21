@@ -11,11 +11,11 @@ import static org.junit.Assert.assertThat;
 
 public class TestController {
     private MenuItem fakeItem = new MenuItem("fakeItem", new GBP(100), "category");
-    private final Menu fakeMenu = new Menu(asList(new MenuItem("lager", new GBP(375), "drink")));
-    private final Menu returnedOrder = new Menu(asList(new MenuItem("cider", new GBP(350), "drink")));
+    private final Menu fakeMenu = new Menu("Restaurant", asList(new MenuItem("lager", new GBP(375), "drink")));
+    private final Menu returnedOrder = new Menu("Restaurant", asList(new MenuItem("cider", new GBP(350), "drink")));
     private final Till fakeTill = new FakeTill();
     private final Order fakeOrder = new Order(returnedOrder);
-    private Controller controller = new Controller(fakeMenu, fakeTill);
+    private Controller controller = new Controller(fakeMenu, fakeTill, null);
     private byte[] emptyBytes = new byte[0];
 
     @Test
